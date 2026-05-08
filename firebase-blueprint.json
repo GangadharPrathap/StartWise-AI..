@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the application",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "PitchDeck": {
+      "title": "PitchDeck",
+      "description": "A generated pitch deck",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "prompt": { "type": "string" },
+        "topic": { "type": "string" },
+        "startupName": { "type": "string" },
+        "targetCity": { "type": "string" },
+        "fundingAsk": { "type": "string" },
+        "theme": { "type": "object" },
+        "slides": { "type": "array", "items": { "type": "object" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "startupName", "slides"]
+    },
+    "ChatSession": {
+      "title": "ChatSession",
+      "description": "A chat session with Gemini",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": { "type": "string", "enum": ["user", "model", "system"] },
+              "content": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "messages"]
+    },
+    "Video": {
+      "title": "Video",
+      "description": "A generated video from an image",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "prompt": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "videoUrl"]
+    },
+    "Meeting": {
+      "title": "Meeting",
+      "description": "A scheduled meeting between a founder and an investor",
+      "type": "object",
+      "properties": {
+        "investorId": { "type": "number" },
+        "founderId": { "type": "string" },
+        "meetingType": { "type": "string", "enum": ["online", "offline"] },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "duration": { "type": "string" },
+        "agenda": { "type": "string" },
+        "founderName": { "type": "string" },
+        "founderEmail": { "type": "string" },
+        "founderPhone": { "type": "string" },
+        "startupName": { "type": "string" },
+        "meetLink": { "type": "string" },
+        "status": { "type": "string", "enum": ["confirmed", "pending", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["investorId", "founderId", "date", "time", "status"]
+    },
+    "StartupKit": {
+      "title": "StartupKit",
+      "description": "A saved startup kit (market analysis, pitch deck, etc.)",
+      "type": "object",
+      "properties": {
+        "idea": { "type": "string" },
+        "city": { "type": "string" },
+        "result": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["idea", "city", "result"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": { "schema": "User", "description": "User profiles" },
+    "/pitchDecks/{deckId}": { "schema": "PitchDeck", "description": "Generated pitch decks" },
+    "/chats/{chatId}": { "schema": "ChatSession", "description": "Chat sessions" },
+    "/videos/{videoId}": { "schema": "Video", "description": "Generated videos" },
+    "/meetings/{meetingId}": { "schema": "Meeting", "description": "Scheduled meetings" },
+    "/users/{uid}/kits/{kitId}": { "schema": "StartupKit", "description": "Saved startup kits for a user" }
+  }
+}

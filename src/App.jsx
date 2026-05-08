@@ -1589,7 +1589,6 @@ export default function App() {
                   }}
                   className="mt-4 w-full text-[10px] text-gray-600 hover:text-gray-400 underline relative z-10"
                 >
-                  Debug: Check Secret Names
                 </button>
 
                 <div className="mt-6 flex justify-center gap-3 flex-wrap relative z-10">

@@ -45,7 +45,7 @@ const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 async function generateDailyRoom() {
   if (!DAILY_API_KEY) {
     console.warn("DAILY_API_KEY is missing. Returning a placeholder link.");
-    return `https://founderai.daily.co/meeting-${Math.random().toString(36).substring(7)}`;
+    return `https://startwiseai.daily.co/meeting-${Math.random().toString(36).substring(7)}`;
   }
 
   try {
@@ -67,7 +67,7 @@ async function generateDailyRoom() {
     return data.url;
   } catch (error) {
     console.error("Daily.co API Error:", error);
-    return `https://founderai.daily.co/fallback-${Math.random().toString(36).substring(7)}`;
+    return `https://startwiseai.daily.co/fallback-${Math.random().toString(36).substring(7)}`;
   }
 }
 
@@ -157,8 +157,8 @@ Return ONLY valid JSON (no extra text) with this exact structure:
 
     if (!GROQ_KEY) {
       console.error("Groq API key is missing from environment variables.");
-      return res.status(500).json({ 
-        error: "Groq API key is not configured. Set GROQ_API_KEY in .env and restart the dev server." 
+      return res.status(500).json({
+        error: "Groq API key is not configured. Set GROQ_API_KEY in .env and restart the dev server."
       });
     }
 
@@ -193,12 +193,12 @@ Analyze the given startup idea for the city of ${city} and return ONLY valid JSO
       });
 
       const content = completion.choices?.[0]?.message?.content;
-      
+
       if (!content) {
         console.error("Groq API returned empty content");
         return res.status(500).json({ error: "AI failed to generate a response. Please try again." });
       }
-      
+
       try {
         const parsedContent = JSON.parse(content);
         res.json(parsedContent);
@@ -221,7 +221,7 @@ Analyze the given startup idea for the city of ${city} and return ONLY valid JSO
 
     try {
       const { data, error } = await resend.emails.send({
-        from: "FounderAI <onboarding@resend.dev>",
+        from: "StartWise AI <onboarding@resend.dev>",
         to: [to],
         subject: subject,
         text: body,

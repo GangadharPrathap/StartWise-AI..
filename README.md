@@ -1,6 +1,6 @@
-# FounderAI - AI Co-Founder for Indian Startups
+# StartWise AI - AI Co-Founder for Indian Startups
 
-FounderAI is a premium, AI-powered platform designed to help first-time Indian founders go from idea to funding in seconds.
+StartWise AI is a premium, AI-powered platform designed to help first-time Indian founders go from idea to funding in seconds.
 
 ## Features
 - **AI Idea Analysis**: Powered by Groq (Llama 3 8B) for deep market insights.

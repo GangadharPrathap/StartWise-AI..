@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './animations.css';
-import { 
-  Home as HomeIcon, 
-  BarChart3, 
-  Map as MapIcon, 
-  Mail, 
-  Settings, 
+import {
+  Home as HomeIcon,
+  BarChart3,
+  Map as MapIcon,
+  Mail,
+  Settings,
   Plus,
   CheckCircle2,
   Loader2,
@@ -54,31 +54,31 @@ import { cn } from './lib/utils';
 import PptxGenJS from 'pptxgenjs';
 import { investors, type Investor, type AIResult, type Meeting, type PPTData, type PPTSlide } from './types';
 import confetti from 'canvas-confetti';
-import { 
-  auth, 
-  db, 
-  signInWithGoogle, 
-  logout, 
+import {
+  auth,
+  db,
+  signInWithGoogle,
+  logout,
   handleFirestoreError,
   OperationType
 } from './firebase';
-import { 
-  onAuthStateChanged, 
-  type User as FirebaseUser 
+import {
+  onAuthStateChanged,
+  type User as FirebaseUser
 } from 'firebase/auth';
-import { 
-  collection, 
-  query, 
-  where, 
-  orderBy, 
-  onSnapshot, 
-  doc, 
-  getDoc, 
-  setDoc, 
-  addDoc, 
-  updateDoc, 
-  serverTimestamp, 
-  getDocFromServer 
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  doc,
+  getDoc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  serverTimestamp,
+  getDocFromServer
 } from 'firebase/firestore';
 import { GoogleGenAI, Type, ThinkingLevel, Modality } from "@google/genai";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
@@ -119,7 +119,7 @@ function extractOrGenerateName(prompt: string, topic: string) {
   const words = prompt.split(' ');
   const caps = words.find(w => w.length > 3 && w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase());
   if(caps && caps.length > 3) return caps;
-  
+
   const names: Record<string, string[]> = {
     food:['TiffinHub','FreshBox','GharKhana','MealMate','YumGo'],
     edtech:['LearnFast','VidyaAI','SmartGuru','StudyPro','GyanBox'],
@@ -153,28 +153,28 @@ function getTitleEmoji(topic: string) {
 
 function selectSlides(templates: any[], count: number, type: string) {
   if (!templates || templates.length === 0) return [];
-  
+
   // 1. Start with title slide
   const selected = [templates[0]];
-  
+
   if (count <= 1) return selected;
-  
+
   // 2. Add middle slides
   // We want to pick up to count-1 more slides, but the last one should be the "Thank You" slide
   const lastIndex = templates.length - 1;
-  
+
   for (let i = 1; i < templates.length - 1 && selected.length < count - 1; i++) {
     if (templates[i]) {
       selected.push(templates[i]);
     }
   }
-  
+
   // 3. Always try to end with the last slide (Thank You)
   const lastSlide = templates[lastIndex];
   if (lastSlide && !selected.includes(lastSlide) && selected.length < count) {
     selected.push(lastSlide);
   }
-  
+
   return selected.slice(0, count);
 }
 
@@ -184,7 +184,7 @@ function generatePresentationContent(prompt: string, slideCount: string, theme: 
   const startupName = extractOrGenerateName(p, topic);
   const targetCity = extractCity(p);
   const fundingAsk = extractFunding(p);
-  
+
   const themeColors: Record<string, any> = {
     '🌑 Dark': { bgColor:'#0A0F2C', titleColor:'#FFFFFF', textColor:'#E5E7EB', accentColor:'#3B82F6', cardBg:'#111827', subtitleColor:'#93C5FD' },
     '🚀 Startup': { bgColor:'#0F172A', titleColor:'#FFFFFF', textColor:'#E2E8F0', accentColor:'#6366F1', cardBg:'#1E1B4B', subtitleColor:'#C4B5FD' },
@@ -193,9 +193,9 @@ function generatePresentationContent(prompt: string, slideCount: string, theme: 
     '🎨 Colorful': { bgColor:'#1A0A2E', titleColor:'#FFFFFF', textColor:'#E9D5FF', accentColor:'#A855F7', cardBg:'#2D1B69', subtitleColor:'#C084FC' },
     '💜 Purple': { bgColor:'#1E1B4B', titleColor:'#FFFFFF', textColor:'#E0E7FF', accentColor:'#818CF8', cardBg:'#312E81', subtitleColor:'#A5B4FC' }
   };
-  
+
   const t = themeColors[theme] || themeColors['🚀 Startup'];
-  
+
   const topicData: Record<string, any> = {
     food: {
       market:'$8.4B', growth:'28% YoY', ask: fundingAsk || '₹50 Lakhs',
@@ -261,9 +261,9 @@ function generatePresentationContent(prompt: string, slideCount: string, theme: 
       stat3:{v:'1000+',l:'Beta Signups'}, stat4:{v:'8/10',l:'User Score'}
     }
   };
-  
+
   const d = topicData[topic] || topicData.tech;
-  
+
   const allSlideTemplates = [
     {
       layoutType: 'title',
@@ -436,9 +436,9 @@ function generatePresentationContent(prompt: string, slideCount: string, theme: 
       stats: []
     }
   ];
-  
+
   const slideSelection = selectSlides(allSlideTemplates, parseInt(slideCount), type);
-  
+
   return {
     presentationTitle: startupName,
     subtitle: d.solution,
@@ -476,14 +476,14 @@ function formatGeminiError(error: unknown): string {
 }
 
 // --- Meeting Scheduler Component ---
-const MeetingScheduler = ({ 
+const MeetingScheduler = ({
   user,
   onBack,
   investor,
   onSchedule,
   isScheduling: isSchedulingProp,
   success: successProp
-}: { 
+}: {
   user: FirebaseUser | null;
   onBack: () => void;
   investor?: Investor;
@@ -512,7 +512,7 @@ const MeetingScheduler = ({
   const finalSuccess = successProp !== undefined ? successProp : success;
 
   const filteredInvestors = investors.filter(inv => {
-    const matchesSearch = inv.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = inv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          inv.fund.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          inv.focus.some(f => f.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCity = selectedCity === "All" || inv.city === selectedCity;
@@ -522,7 +522,7 @@ const MeetingScheduler = ({
   const handleSchedule = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedInvestor || !selectedDate || !selectedTime) return;
-    
+
     if (onSchedule) {
       onSchedule({
         investorId: selectedInvestor.id || 0,
@@ -543,7 +543,7 @@ const MeetingScheduler = ({
     setIsScheduling(true);
     // Mock scheduling delay
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     const newMeeting = {
       id: Math.random().toString(36).substr(2, 9),
       investorName: selectedInvestor.name,
@@ -574,8 +574,8 @@ const MeetingScheduler = ({
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[100px] animate-pulse" />
-        
-        <motion.div 
+
+        <motion.div
           initial={{ scale: 0.9, opacity: 0, y: 30 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-[32px] p-12 max-w-[480px] w-full shadow-2xl relative z-10 animate-float"
@@ -640,14 +640,14 @@ const MeetingScheduler = ({
           <div className="space-y-6">
             <div className="bg-[#111827] border border-[#1F2937] rounded-[16px] p-6">
               <label className="block text-white text-base font-bold mb-4">Select Investor 👤</label>
-              <input 
+              <input
                 type="text"
                 placeholder="Search by name, fund, or focus..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[#1F2937] text-white border border-[#374151] rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition-all mb-4"
               />
-              
+
               <div className="flex flex-wrap gap-2 mb-6">
                 {["All", "Delhi NCR", "Mumbai", "Bangalore", "Hyderabad"].map(city => (
                   <button
@@ -665,7 +665,7 @@ const MeetingScheduler = ({
 
               <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {filteredInvestors.map(inv => (
-                  <div 
+                  <div
                     key={inv.id}
                     onClick={() => setSelectedInvestor(inv)}
                     className={cn(
@@ -674,7 +674,7 @@ const MeetingScheduler = ({
                     )}
                   >
                     <div className="flex gap-4 items-center">
-                      <div 
+                      <div
                         className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
                         style={{ backgroundColor: inv.color }}
                       >
@@ -691,7 +691,7 @@ const MeetingScheduler = ({
                         <span className="bg-[#064E3B] text-[#6EE7B7] text-[10px] px-2 py-0.5 rounded-full">🤝 Office</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-wrap gap-2 mt-3">
                       {inv.focus.map(f => (
                         <span key={f} className="bg-gray-800 text-gray-400 text-[10px] px-2 py-0.5 rounded-md">{f}</span>
@@ -699,7 +699,7 @@ const MeetingScheduler = ({
                     </div>
 
                     {selectedInvestor?.id === inv.id && (
-                      <motion.div 
+                      <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         className="mt-4 pt-4 border-t border-[#374151] space-y-2"
@@ -735,7 +735,7 @@ const MeetingScheduler = ({
           <div className="space-y-6">
             <div className="bg-[#111827] border border-[#1F2937] rounded-[16px] p-6">
               <label className="block text-white text-base font-bold mb-4">Meeting Details 📅</label>
-              
+
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <button
                   onClick={() => setMeetingType('online')}
@@ -771,7 +771,7 @@ const MeetingScheduler = ({
                       const dateStr = date.toISOString().split('T')[0];
                       const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
                       const dayNum = date.getDate();
-                      
+
                       return (
                         <button
                           key={dateStr}
@@ -810,7 +810,7 @@ const MeetingScheduler = ({
                 <form onSubmit={handleSchedule} className="space-y-4 pt-4">
                   <div>
                     <label className="block text-gray-500 text-xs font-medium mb-2 uppercase tracking-wider">Startup Name</label>
-                    <input 
+                    <input
                       type="text"
                       required
                       value={startupName}
@@ -821,7 +821,7 @@ const MeetingScheduler = ({
                   </div>
                   <div>
                     <label className="block text-gray-500 text-xs font-medium mb-2 uppercase tracking-wider">Meeting Agenda</label>
-                    <textarea 
+                    <textarea
                       required
                       value={agenda}
                       onChange={(e) => setAgenda(e.target.value)}
@@ -854,22 +854,22 @@ const MeetingScheduler = ({
               <button className="p-2 bg-[#1F2937] rounded-lg text-white hover:bg-gray-700 transition-all"><ChevronRight size={20} /></button>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-7 gap-2 mb-4">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
               <div key={day} className="text-center text-gray-500 text-xs font-bold uppercase tracking-widest">{day}</div>
             ))}
           </div>
-          
+
           <div className="grid grid-cols-7 gap-2">
             {Array.from({ length: 35 }).map((_, i) => {
               const day = i - 2; // Offset for April 2026 starting on Wednesday
               const isCurrentMonth = day >= 1 && day <= 30;
               const isToday = day === 1;
-              
+
               return (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className={cn(
                     "aspect-square rounded-xl border border-[#1F2937] p-2 flex flex-col transition-all",
                     isCurrentMonth ? "bg-[#1F2937]/30" : "opacity-20",
@@ -905,7 +905,7 @@ const MeetingScheduler = ({
               </div>
               <h3 className="text-xl font-bold text-white mb-2">No Meetings Scheduled</h3>
               <p className="text-gray-500 mb-8">You haven't booked any meetings yet. Start by exploring investors.</p>
-              <button 
+              <button
                 onClick={() => setActiveSubTab('book')}
                 className="px-8 py-3 bg-accent text-white font-bold rounded-xl hover:bg-blue-600 transition-all"
               >
@@ -919,7 +919,7 @@ const MeetingScheduler = ({
                   <span className="text-accent font-bold text-xl">{m.date.split('-')[2]}</span>
                   <span className="text-accent text-[10px] uppercase font-bold">{new Date(m.date).toLocaleDateString('en-US', { month: 'short' })}</span>
                 </div>
-                
+
                 <div className="flex-1 text-center md:text-left">
                   <h3 className="text-white font-bold text-lg">{m.investorName}</h3>
                   <p className="text-gray-500 text-sm">{m.investorFund}</p>
@@ -947,7 +947,7 @@ const MeetingScheduler = ({
 function generateMockDashboard(idea: string, city: string) {
   const topic = detectTopic(idea);
   const startupName = extractOrGenerateName(idea, topic);
-  
+
   const stats = {
     food: { tam: "$8.4B", growth: "28%", users: "1.2M", competitors: ["Zomato", "Swiggy", "EatFit"] },
     edtech: { tam: "$4.2B", growth: "39%", users: "2.5M", competitors: ["Byju's", "Unacademy", "PhysicsWallah"] },
@@ -957,9 +957,9 @@ function generateMockDashboard(idea: string, city: string) {
     saas: { tam: "$3.8B", growth: "35%", users: "100K", competitors: ["Zoho", "Freshworks", "Postman"] },
     tech: { tam: "$5.5B", growth: "31%", users: "1M", competitors: ["Player 1", "Player 2", "Player 3"] }
   };
-  
+
   const s = stats[topic as keyof typeof stats] || stats.tech;
-  
+
   return {
     startupName,
     marketSize: s.tam,
@@ -1010,11 +1010,11 @@ function ChangeView({ center, zoom }: { center: [number, number], zoom: number }
 }
 
 // --- My Meetings Component ---
-const MyMeetings = ({ 
-  meetings, 
-  onCancel 
-}: { 
-  meetings: Meeting[]; 
+const MyMeetings = ({
+  meetings,
+  onCancel
+}: {
+  meetings: Meeting[];
   onCancel: (id: string) => void;
 }) => {
   const [reminders, setReminders] = useState<Record<string, boolean>>({});
@@ -1129,9 +1129,9 @@ const MyMeetings = ({
                       <Monitor className="w-4 h-4 text-blue-400" />
                       <span className="text-[10px] text-blue-300 font-medium">Google Meet Link Ready</span>
                     </div>
-                    <a 
-                      href={meeting.meetLink} 
-                      target="_blank" 
+                    <a
+                      href={meeting.meetLink}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-[10px] bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg transition-colors"
                     >
@@ -1146,7 +1146,7 @@ const MyMeetings = ({
                       <MapPin className="w-4 h-4 text-green-400" />
                       <span className="text-[10px] text-green-300 font-medium">Office Location</span>
                     </div>
-                    <button 
+                    <button
                       onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(investor?.officeAddress || '')}`, '_blank')}
                       className="text-[10px] bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg transition-colors"
                     >
@@ -1163,8 +1163,8 @@ const MyMeetings = ({
                     disabled={reminders[meeting.id]}
                     className={cn(
                       "text-[10px] flex items-center gap-1 transition-all px-3 py-1.5 rounded-lg",
-                      reminders[meeting.id] 
-                        ? "bg-green-500/20 text-green-400 cursor-not-allowed" 
+                      reminders[meeting.id]
+                        ? "bg-green-500/20 text-green-400 cursor-not-allowed"
                         : "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 cursor-pointer"
                     )}
                   >
@@ -1225,7 +1225,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             <pre className="bg-black/50 p-4 rounded-lg text-left text-[10px] text-red-400 overflow-auto mb-6 max-h-40">
               {this.state.error?.message || JSON.stringify(this.state.error)}
             </pre>
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="w-full bg-accent text-white py-3 rounded-xl font-bold hover:bg-blue-500 transition-all"
             >
@@ -1240,11 +1240,11 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 }
 
 // --- PPT Maker Component ---
-const PPTMaker = ({ 
-  pptData, 
-  onGenerate, 
-  isGenerating, 
-  loadingStep, 
+const PPTMaker = ({
+  pptData,
+  onGenerate,
+  isGenerating,
+  loadingStep,
   progress,
   prompt,
   setPrompt,
@@ -1265,7 +1265,7 @@ const PPTMaker = ({
   isSpeaking,
   transition,
   setTransition
-}: { 
+}: {
   pptData: PPTData | null;
   onGenerate: () => void;
   isGenerating: boolean;
@@ -1317,14 +1317,14 @@ const PPTMaker = ({
   if (isGenerating) {
     return (
       <div className="fixed inset-0 bg-black/92 z-[999] flex items-center justify-center p-6">
-        <motion.div 
+        <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className="bg-[#111827] border border-gray-800 rounded-[24px] p-12 max-w-[420px] w-full text-center"
         >
           <div className="relative w-20 h-20 mx-auto mb-8">
             <div className="absolute inset-0 border-3 border-gray-800 rounded-full" />
-            <motion.div 
+            <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0 border-3 border-transparent border-t-accent border-r-indigo-500 rounded-full"
@@ -1359,7 +1359,7 @@ const PPTMaker = ({
           </div>
 
           <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden mb-3">
-            <motion.div 
+            <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               className="absolute inset-y-0 left-0 bg-gradient-to-r from-accent via-indigo-500 to-purple-500 transition-all duration-300"
@@ -1384,7 +1384,7 @@ const PPTMaker = ({
 
         <div className="bg-[#111827] border border-[#1F2937] rounded-[20px] p-10 shadow-2xl">
           <div className="relative">
-            <textarea 
+            <textarea
               id="pptPrompt"
               rows={5}
               value={prompt}
@@ -1407,8 +1407,8 @@ const PPTMaker = ({
                     onClick={() => setSlidesCount(n)}
                     className={cn(
                       "px-4 py-1.5 rounded-full text-[13px] font-medium border transition-all",
-                      slidesCount === n 
-                        ? "bg-[#3B82F6] text-white border-[#3B82F6]" 
+                      slidesCount === n
+                        ? "bg-[#3B82F6] text-white border-[#3B82F6]"
                         : "bg-[#1F2937] text-[#9CA3AF] border-[#374151] hover:border-gray-500"
                     )}
                   >
@@ -1427,8 +1427,8 @@ const PPTMaker = ({
                     onClick={() => setTheme(t)}
                     className={cn(
                       "px-4 py-1.5 rounded-full text-[13px] font-medium border transition-all",
-                      theme === t 
-                        ? "bg-[#3B82F6] text-white border-[#3B82F6]" 
+                      theme === t
+                        ? "bg-[#3B82F6] text-white border-[#3B82F6]"
                         : "bg-[#1F2937] text-[#9CA3AF] border-[#374151] hover:border-gray-500"
                     )}
                   >
@@ -1447,8 +1447,8 @@ const PPTMaker = ({
                     onClick={() => setLanguage(l)}
                     className={cn(
                       "px-4 py-1.5 rounded-full text-[13px] font-medium border transition-all",
-                      language === l 
-                        ? "bg-[#3B82F6] text-white border-[#3B82F6]" 
+                      language === l
+                        ? "bg-[#3B82F6] text-white border-[#3B82F6]"
                         : "bg-[#1F2937] text-[#9CA3AF] border-[#374151] hover:border-gray-500"
                     )}
                   >
@@ -1502,7 +1502,7 @@ const PPTMaker = ({
             </div>
           </div>
 
-          <button 
+          <button
             id="pptGenerateBtn"
             onClick={onGenerate}
             disabled={!prompt.trim()}
@@ -1568,14 +1568,14 @@ const PPTMaker = ({
               </button>
             ))}
           </div>
-          <button 
+          <button
             onClick={onEditPrompt}
             className="px-3 md:px-4 py-2 border border-gray-700 text-gray-300 rounded-lg text-xs md:text-sm font-medium hover:bg-white/5 transition-all"
           >
             <span className="hidden sm:inline">Edit Prompt</span> ✏️
           </button>
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => onTTS(pptData.slides[currentSlideIndex].content + (pptData.slides[currentSlideIndex].speakerNotes || ''))}
               disabled={isSpeaking}
               className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-all border border-gray-700 disabled:opacity-50 flex items-center gap-2"
@@ -1584,7 +1584,7 @@ const PPTMaker = ({
               {isSpeaking ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
               Speak
             </button>
-            <button 
+            <button
               onClick={onDownload}
               className="px-6 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-lg text-sm font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20"
             >
@@ -1629,7 +1629,7 @@ const PPTMaker = ({
               Slide {currentSlideIndex + 1} of {pptData.slides.length}
             </p>
 
-            <button 
+            <button
               onClick={() => setCurrentSlideIndex(prev => Math.max(0, prev - 1))}
               disabled={currentSlideIndex === 0}
               className="absolute left-6 w-12 h-12 bg-[#111827] border border-[#1F2937] text-white rounded-full flex items-center justify-center hover:bg-[#1F2937] disabled:opacity-30 transition-all z-10"
@@ -1637,7 +1637,7 @@ const PPTMaker = ({
               <ChevronLeft size={24} />
             </button>
 
-            <motion.div 
+            <motion.div
               key={currentSlideIndex}
               initial={transitionVariants[transition].initial}
               animate={transitionVariants[transition].animate}
@@ -1663,14 +1663,14 @@ const PPTMaker = ({
                 <div className="h-full p-6 md:p-12 relative flex flex-col overflow-y-auto custom-scrollbar md:overflow-visible">
                   <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: pptData.theme.accentColor }} />
                   <div className="absolute top-2 right-4 md:top-4 md:right-6 text-gray-500 text-[10px] md:text-xs">{currentSlide.slideNumber}</div>
-                  
+
                   <div className="flex items-center gap-2 md:gap-4 mb-4 md:mb-6 mt-4 md:mt-0">
                     <span className="text-2xl md:text-4xl">{currentSlide.emoji}</span>
                     <h2 className="text-xl md:text-[32px] font-bold leading-tight" style={{ color: pptData.theme.titleColor }}>{currentSlide.title}</h2>
                   </div>
-                  
+
                   <p className="text-xs md:text-base mb-4 md:mb-8 leading-relaxed line-clamp-3 md:line-clamp-none" style={{ color: pptData.theme.textColor }}>{currentSlide.content}</p>
-                  
+
                   <div className="space-y-2 md:space-y-4 pb-4 md:pb-0">
                     {currentSlide.bulletPoints?.map((bullet, i) => (
                       <div key={i} className="flex items-start gap-3 md:gap-4">
@@ -1685,7 +1685,7 @@ const PPTMaker = ({
               {currentSlide.layoutType === 'stats' && (
                 <div className="h-full p-6 md:p-12 relative flex flex-col overflow-y-auto custom-scrollbar md:overflow-visible">
                   <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: pptData.theme.accentColor }} />
-                  
+
                   <div className="flex items-center gap-2 md:gap-4 mb-4 md:mb-8 mt-4 md:mt-0">
                     <span className="text-2xl md:text-4xl">{currentSlide.emoji}</span>
                     <h2 className="text-xl md:text-[32px] font-bold" style={{ color: pptData.theme.titleColor }}>{currentSlide.title}</h2>
@@ -1705,7 +1705,7 @@ const PPTMaker = ({
               {currentSlide.layoutType === 'split' && (
                 <div className="h-full p-6 md:p-12 flex flex-col md:flex-row gap-4 md:gap-10 relative overflow-y-auto custom-scrollbar md:overflow-visible pt-10 md:pt-12 pb-4 md:pb-12">
                   <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: pptData.theme.accentColor }} />
-                  
+
                   <div className="flex-1 shrink-0 md:shrink">
                     <div className="text-4xl md:text-[80px] mb-2 md:mb-6">{currentSlide.emoji}</div>
                     <h2 className="text-xl md:text-[32px] font-bold mb-2 md:mb-4 leading-tight" style={{ color: pptData.theme.titleColor }}>{currentSlide.title}</h2>
@@ -1740,7 +1740,7 @@ const PPTMaker = ({
               {currentSlide.layoutType === 'team' && (
                 <div className="h-full p-6 md:p-12 relative flex flex-col overflow-y-auto custom-scrollbar md:overflow-visible">
                   <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: pptData.theme.accentColor }} />
-                  
+
                   <div className="flex items-center gap-2 md:gap-4 mb-4 md:mb-8 mt-4 md:mt-0">
                     <span className="text-2xl md:text-4xl">{currentSlide.emoji}</span>
                     <h2 className="text-xl md:text-[32px] font-bold" style={{ color: pptData.theme.titleColor }}>{currentSlide.title}</h2>
@@ -1776,13 +1776,13 @@ const PPTMaker = ({
                     {currentSlide.content}
                   </p>
                   <div className="absolute bottom-4 md:bottom-6 left-0 right-0 text-[10px] md:text-[13px] opacity-40 px-4" style={{ color: pptData.theme.textColor }}>
-                    Made with FounderAI
+                    Made with StartWise AI
                   </div>
                 </div>
               )}
             </motion.div>
 
-            <button 
+            <button
               onClick={() => setCurrentSlideIndex(prev => Math.min(pptData.slides.length - 1, prev + 1))}
               disabled={currentSlideIndex === pptData.slides.length - 1}
               className="absolute right-6 w-12 h-12 bg-[#111827] border border-[#1F2937] text-white rounded-full flex items-center justify-center hover:bg-[#1F2937] disabled:opacity-30 transition-all z-10"
@@ -1798,7 +1798,7 @@ const PPTMaker = ({
                 <Mail size={14} />
                 🎤 Speaker Notes:
               </div>
-              <button 
+              <button
                 onClick={() => setShowSpeakerNotes(!showSpeakerNotes)}
                 className="text-[10px] text-accent hover:underline"
               >
@@ -1806,7 +1806,7 @@ const PPTMaker = ({
               </button>
             </div>
             {showSpeakerNotes && (
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-white text-sm leading-relaxed"
@@ -1836,7 +1836,7 @@ const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }: { activeTab: s
     <aside className="fixed left-0 top-0 h-full w-16 xl:w-64 bg-sidebar-bg border-r border-border flex flex-col items-center xl:items-stretch py-6 z-50 transition-all">
       <div className="px-4 mb-10 flex items-center gap-3">
         <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold text-xl">F</div>
-        <span className="hidden xl:block font-bold text-xl tracking-tight">FounderAI</span>
+        <span className="hidden xl:block font-bold text-xl tracking-tight">StartWiseAI</span>
       </div>
 
       <nav className="flex-1 w-full px-2 space-y-2">
@@ -1857,14 +1857,14 @@ const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }: { activeTab: s
               </span>
             )}
             {activeTab === item.id && (
-              <motion.div 
+              <motion.div
                 layoutId="active-pill"
                 className="absolute left-0 w-1 h-6 bg-accent rounded-r-full"
               />
             )}
           </button>
         ))}
-        
+
         <button
           onClick={onToggleChat}
           className="w-full flex items-center gap-4 px-3 py-3 rounded-xl text-muted-text hover:bg-white/5 hover:text-white transition-all group relative"
@@ -1885,7 +1885,7 @@ const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }: { activeTab: s
             </div>
           </div>
         ) : (
-          <button 
+          <button
             onClick={() => signInWithGoogle()}
             className="w-full flex items-center gap-4 px-3 py-3 rounded-xl text-accent hover:bg-accent/10 transition-all"
           >
@@ -1916,16 +1916,16 @@ const LoadingOverlay = ({ step }: { step: number }) => {
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-xl z-[200] flex items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         className="bg-gray-900/50 border border-gray-700/50 rounded-3xl p-10 max-w-md w-full text-center relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 animate-progress-flow" />
-        
+
         <div className="relative w-24 h-24 mx-auto mb-8">
           <div className="absolute inset-0 border-4 border-accent/10 rounded-full" />
-          <motion.div 
+          <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             className="absolute inset-0 border-4 border-t-accent border-r-accent/30 rounded-full"
@@ -1936,14 +1936,14 @@ const LoadingOverlay = ({ step }: { step: number }) => {
         </div>
 
         <h2 className="text-2xl font-bold text-white mb-6 premium-gradient-text">Co-Founder is building...</h2>
-        
+
         <div className="space-y-4 text-left">
           {steps.map((s, i) => (
-            <motion.div 
+            <motion.div
               key={i}
               initial={{ opacity: 0.3, x: -10 }}
-              animate={{ 
-                opacity: step >= i ? 1 : 0.3, 
+              animate={{
+                opacity: step >= i ? 1 : 0.3,
                 x: step >= i ? 0 : -10,
                 scale: step === i ? 1.05 : 1
               }}
@@ -2010,7 +2010,7 @@ export default function App() {
       return;
     }
     const q = query(
-      collection(db, 'pitchDecks'), 
+      collection(db, 'pitchDecks'),
       where('userId', '==', user.uid)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -2190,7 +2190,7 @@ export default function App() {
           body: JSON.stringify({
             to: meetingData.founderEmail,
             subject: `Meeting Confirmed: ${investor.name} x ${meetingData.startupName}`,
-            body: `Hi ${meetingData.founderName},\n\nYour meeting with ${investor.name} from ${investor.fund} has been confirmed.\n\nType: ${meetingData.meetingType}\nDate: ${meetingData.date}\nTime: ${meetingData.time}\n${meetLink ? `Link: ${meetLink}` : `Location: ${investor.officeAddress}`}\n\nGood luck!\nFounderAI Team`
+            body: `Hi ${meetingData.founderName},\n\nYour meeting with ${investor.name} from ${investor.fund} has been confirmed.\n\nType: ${meetingData.meetingType}\nDate: ${meetingData.date}\nTime: ${meetingData.time}\n${meetLink ? `Link: ${meetLink}` : `Location: ${investor.officeAddress}`}\n\nGood luck!\StartWise AI Team`
           })
         });
 
@@ -2201,7 +2201,7 @@ export default function App() {
           body: JSON.stringify({
             to: investor.email,
             subject: `New Meeting Request: ${meetingData.startupName}`,
-            body: `Hi ${investor.name},\n\nA new meeting has been scheduled with ${meetingData.founderName} from ${meetingData.startupName}.\n\nType: ${meetingData.meetingType}\nDate: ${meetingData.date}\nTime: ${meetingData.time}\nAgenda: ${meetingData.agenda}\n\nFounderAI Team`
+            body: `Hi ${investor.name},\n\nA new meeting has been scheduled with ${meetingData.founderName} from ${meetingData.startupName}.\n\nType: ${meetingData.meetingType}\nDate: ${meetingData.date}\nTime: ${meetingData.time}\nAgenda: ${meetingData.agenda}\n\nStartWise AI Team`
           })
         });
       }
@@ -2248,10 +2248,10 @@ export default function App() {
       // Mock Dashboard Generation (Zero API)
       await new Promise(resolve => setTimeout(resolve, 2000));
       const data = generateMockDashboard(idea, selectedCity);
-      
+
       const finalResult = { ...data, groundingSources: [], city: selectedCity };
       setResult(finalResult);
-      
+
       setActiveTab('dashboard');
     } catch (error) {
       console.error("Generation failed", error);
@@ -2281,7 +2281,7 @@ export default function App() {
     // Zero API Rule: Use mailto link
     const mailtoLink = `mailto:${emailTo}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
     window.location.href = mailtoLink;
-    
+
     setEmailSent(true);
     confetti({
       particleCount: 150,
@@ -2382,7 +2382,7 @@ export default function App() {
 
     try {
       const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-      
+
       // Prepare history for the chat
       const history = chatMessages.map(m => ({
         role: m.role === 'user' ? 'user' : 'model',
@@ -2392,13 +2392,13 @@ export default function App() {
       const chat = ai.chats.create({
         model: "gemini-2.5-flash",
         config: {
-          systemInstruction: "You are FounderAI Co-Pilot, a world-class startup strategist and venture capital expert. Your goal is to help founders build billion-dollar companies. Provide deep, actionable insights on business models, unit economics, fundraising, and product-market fit. Be visionary yet practical. Use professional, encouraging language. If the user asks about their pitch deck, refer to the data they've provided in the app if possible.",
+          systemInstruction: "You are StartWise AI Co-Pilot, a world-class startup strategist and venture capital expert. Your goal is to help founders build billion-dollar companies. Provide deep, actionable insights on business models, unit economics, fundraising, and product-market fit. Be visionary yet practical. Use professional, encouraging language. If the user asks about their pitch deck, refer to the data they've provided in the app if possible.",
         },
         history: history,
       });
 
-      const response = await chat.sendMessage({ 
-        message: userMsg 
+      const response = await chat.sendMessage({
+        message: userMsg
       });
 
       const modelResponse = response.text || "I'm sorry, I couldn't process that.";
@@ -2461,7 +2461,7 @@ export default function App() {
           thinkingConfig: { thinkingLevel: ThinkingLevel.HIGH }
         }
       });
-      
+
       setThinkingResult(response.text || "Analysis complete.");
     } catch (error) {
       console.error("Thinking Error:", error);
@@ -2473,19 +2473,19 @@ export default function App() {
 
   const handleDownloadPPTX = () => {
     if (!pptData) return;
-    
+
     const pptx = new PptxGenJS();
     pptx.layout = 'LAYOUT_WIDE';
     pptx.title = pptData.presentationTitle;
-    
+
     const theme = pptData.theme;
-    
+
     pptData.slides.forEach((slideData) => {
       const slide = pptx.addSlide();
-      
+
       // Background
       slide.background = { color: (theme.bgColor || '#000000').replace('#','') };
-      
+
       // Top accent bar
       if (slideData.layoutType !== 'title') {
         slide.addShape(pptx.ShapeType.rect, {
@@ -2515,7 +2515,7 @@ export default function App() {
       // Bullet Points
       if (slideData.bulletPoints && slideData.bulletPoints.length > 0) {
         slide.addText(
-          slideData.bulletPoints.map(p => `• ${p}`).join('\n'), 
+          slideData.bulletPoints.map(p => `• ${p}`).join('\n'),
           {
             x: 0.5, y: 2.5, w: '90%', h: 3,
             fontSize: 16, color: (theme.textColor || '#E5E7EB').replace('#',''),
@@ -2550,7 +2550,7 @@ export default function App() {
         slide.addNotes(slideData.speakerNotes);
       }
     });
-    
+
     pptx.writeFile({ fileName: `${(pptData.presentationTitle || 'Presentation').replace(/\s+/g, '_')}.pptx` });
   };
 
@@ -2564,7 +2564,7 @@ export default function App() {
         { slideNumber: result.pitchSlides.length + 1, title: "Future Roadmap", content: "Our vision for the next 24 months." },
         { slideNumber: result.pitchSlides.length + 2, title: "Financial Projections", content: "Projected revenue growth and profitability." }
       ];
-      
+
       const updatedResult = {
         ...result,
         pitchSlides: [...result.pitchSlides, ...newSlides]
@@ -2587,7 +2587,7 @@ export default function App() {
     <ErrorBoundary>
       <div className="min-h-screen bg-primary-bg flex">
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} user={user} onToggleChat={() => setIsChatOpen(!isChatOpen)} />
-        
+
         <main className="flex-1 ml-16 xl:ml-64 p-4 md:p-8 overflow-x-hidden">
           <AnimatePresence mode="wait">
             {!isAuthReady && (
@@ -2599,7 +2599,7 @@ export default function App() {
             {isLoading && <LoadingOverlay step={loadingStep} />}
 
             {activeTab === 'home' && (
-            <motion.div 
+            <motion.div
               key="home"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -2617,7 +2617,7 @@ export default function App() {
               <div className="glass-card-glow border border-border/30 rounded-2xl p-8 shadow-2xl relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <label className="block text-sm text-muted-text mb-2 relative z-10">Apna startup idea batao</label>
-                <textarea 
+                <textarea
                   rows={6}
                   value={idea}
                   onChange={(e) => setIdea(e.target.value)}
@@ -2639,8 +2639,8 @@ export default function App() {
                       onClick={() => setSelectedCity(city)}
                       className={cn(
                         "px-4 py-2 rounded-full border text-sm transition-all relative z-10",
-                        selectedCity === city 
-                          ? "bg-accent text-white border-accent" 
+                        selectedCity === city
+                          ? "bg-accent text-white border-accent"
                           : "bg-gray-800 text-muted-text border-gray-700 hover:border-gray-500"
                       )}
                     >
@@ -2649,7 +2649,7 @@ export default function App() {
                   ))}
                 </div>
 
-                <button 
+                <button
                   onClick={handleGenerate}
                   disabled={!idea.trim() || isLoading}
                   className="mt-8 w-full h-14 bg-accent hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 relative z-10"
@@ -2657,7 +2657,7 @@ export default function App() {
                   Generate My Co-Founder Kit 🚀
                 </button>
 
-                <button 
+                <button
                   onClick={async () => {
                     const res = await fetch('/api/debug-env');
                     const data = await res.json();
@@ -2680,7 +2680,7 @@ export default function App() {
           )}
 
           {activeTab === 'dashboard' && (
-            <motion.div 
+            <motion.div
               key="dashboard"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -2701,7 +2701,7 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* CARD 1: Market Analysis */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
@@ -2710,7 +2710,7 @@ export default function App() {
                   <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                   <div className="absolute left-0 top-6 bottom-6 w-1 bg-gradient-to-b from-accent to-accent/20 rounded-r-full" />
                   <div className="flex items-center gap-4 mb-6 relative z-10">
-                    <motion.div 
+                    <motion.div
                       className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center text-accent border border-accent/30 group-hover:border-accent/60 transition-colors"
                       whileHover={{ rotate: 360 }}
                       transition={{ duration: 0.6 }}
@@ -2738,9 +2738,9 @@ export default function App() {
                   <div className="space-y-4 relative z-10">
                     {/* TAM/SAM/SOM Breakdown */}
                     <div className="grid grid-cols-3 gap-3 mb-6 p-4 bg-black/30 rounded-xl border border-accent/10">
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.8 }} 
-                        animate={{ opacity: 1, scale: 1 }} 
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
                         className="text-center"
                       >
@@ -2748,9 +2748,9 @@ export default function App() {
                         <p className="text-sm font-bold text-accent">{result?.marketSize || "$8.4B"}</p>
                         <p className="text-[9px] text-gray-500 mt-1">Total Market</p>
                       </motion.div>
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.8 }} 
-                        animate={{ opacity: 1, scale: 1 }} 
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.3 }}
                         className="text-center border-l border-r border-gray-700"
                       >
@@ -2758,9 +2758,9 @@ export default function App() {
                         <p className="text-sm font-bold text-blue-400">${(Number(result?.marketSize?.replace(/[\$B]/g, '') || 8.4) * 0.3).toFixed(1)}B</p>
                         <p className="text-[9px] text-gray-500 mt-1">Serviceable</p>
                       </motion.div>
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.8 }} 
-                        animate={{ opacity: 1, scale: 1 }} 
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.4 }}
                         className="text-center"
                       >
@@ -2798,10 +2798,10 @@ export default function App() {
                       <p className="text-[10px] text-muted-text mb-2 uppercase font-bold tracking-wider">Analysis Summary</p>
                       <p className="text-xs text-gray-300 leading-relaxed italic line-clamp-2">"{result?.marketAnalysisDetails}"</p>
                     </div>
-                    
+
                     <div className="flex items-center justify-between py-3 border-b border-gray-800">
                       <span className="text-muted-text">Competitors Found</span>
-                      <motion.span 
+                      <motion.span
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}
@@ -2810,11 +2810,11 @@ export default function App() {
                         {result?.competitors.length || 3} companies
                       </motion.span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between py-3">
                       <span className="text-muted-text">Opportunity Score</span>
                       <div className="flex items-center gap-2">
-                        <motion.div 
+                        <motion.div
                           className="relative"
                           animate={{ scale: [1, 1.05, 1] }}
                           transition={{ duration: 2, repeat: Infinity }}
@@ -2823,10 +2823,10 @@ export default function App() {
                         </motion.div>
                         <div className="flex text-amber-400">
                           {[1, 2, 3, 4, 5].map((s, i) => (
-                            <motion.span 
-                              key={s} 
-                              initial={{ opacity: 0 }} 
-                              animate={{ opacity: 1 }} 
+                            <motion.span
+                              key={s}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
                               transition={{ delay: 0.6 + i * 0.05 }}
                             >
                               ★
@@ -2841,8 +2841,8 @@ export default function App() {
                     <p className="text-xs text-muted-text mb-2 uppercase font-bold tracking-wider">Top Competitors</p>
                     <div className="flex flex-wrap gap-2">
                       {result?.competitors.map((c, i) => (
-                        <motion.span 
-                          key={c.name} 
+                        <motion.span
+                          key={c.name}
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.7 + i * 0.05 }}
@@ -2860,10 +2860,10 @@ export default function App() {
                       <p className="text-xs text-muted-text mb-3 uppercase font-bold tracking-wider">Sources (Google Search)</p>
                       <div className="space-y-2 max-h-[120px] overflow-y-auto">
                         {result.groundingSources.map((source, i) => (
-                          <motion.a 
-                            key={i} 
-                            href={source.uri} 
-                            target="_blank" 
+                          <motion.a
+                            key={i}
+                            href={source.uri}
+                            target="_blank"
                             rel="noopener noreferrer"
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -2877,7 +2877,7 @@ export default function App() {
                       </div>
                     </div>
                   )}
-                  <motion.button 
+                  <motion.button
                     whileHover={{ x: 5 }}
                     onClick={() => setShowAnalysisModal(true)}
                     className="mt-6 text-accent text-sm font-medium hover:underline flex items-center gap-1 relative z-10"
@@ -2887,7 +2887,7 @@ export default function App() {
                 </motion.div>
 
                 {/* CARD 2: Pitch Deck */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -2937,16 +2937,16 @@ export default function App() {
                     <div className="flex items-center gap-2">
                       <div className="flex-1 flex items-center bg-gray-800/50 rounded-xl px-3 border border-gray-700">
                         <span className="text-xs text-gray-500 mr-2">Count:</span>
-                        <input 
-                          type="number" 
-                          min="1" 
+                        <input
+                          type="number"
+                          min="1"
                           max="10"
                           value={additionalSlidesCount}
                           onChange={(e) => setAdditionalSlidesCount(parseInt(e.target.value) || 1)}
                           className="w-full bg-transparent text-white py-2 text-sm outline-none"
                         />
                       </div>
-                      <button 
+                      <button
                         onClick={handleGenerateMoreSlides}
                         disabled={isGeneratingSlides}
                         className="bg-accent hover:bg-blue-500 disabled:opacity-50 px-4 py-2 rounded-xl text-white text-xs font-bold transition-all flex items-center gap-2"
@@ -2956,7 +2956,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <button 
+                  <button
                     onClick={handleDownloadPPTX}
                     className="mt-6 w-full border border-gray-700 text-gray-400 hover:text-accent hover:border-accent hover:bg-accent/10 rounded-xl py-3 text-sm font-bold transition-all flex items-center justify-center gap-2 relative z-10"
                   >
@@ -2965,7 +2965,7 @@ export default function App() {
                 </motion.div>
 
                 {/* CARD 3: Investors */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
@@ -2993,8 +2993,8 @@ export default function App() {
 
                   <div className="space-y-2 max-h-48 overflow-y-auto mb-4 custom-scrollbar pr-2 relative z-10">
                     {(result?.localInvestors || investors.slice(0, 5)).map((inv: any, idx: number) => (
-                      <div 
-                        key={inv.id || idx} 
+                      <div
+                        key={inv.id || idx}
                         className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group/inv cursor-pointer"
                         onClick={() => {
                           if (inv.uri) window.open(inv.uri, '_blank');
@@ -3010,7 +3010,7 @@ export default function App() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <button 
+                          <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedInvestorForMeeting(inv);
@@ -3025,7 +3025,7 @@ export default function App() {
                     ))}
                   </div>
 
-                  <button 
+                  <button
                     onClick={() => setActiveTab('map')}
                     className="mt-2 w-full border border-gray-700 text-gray-400 hover:text-success hover:border-success hover:bg-success/10 rounded-xl py-3 text-sm font-bold transition-all flex items-center justify-center gap-2 relative z-10"
                   >
@@ -3034,7 +3034,7 @@ export default function App() {
                 </motion.div>
 
                 {/* CARD 4: Investor Email Draft */}
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
@@ -3042,7 +3042,7 @@ export default function App() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                   <div className="absolute left-0 top-6 bottom-6 w-1 bg-gradient-to-b from-amber-500 to-amber-500/20 rounded-r-full" />
-                  
+
                   <div className="flex flex-col gap-6 relative z-10">
                     <div>
                       <div className="flex items-center gap-4 mb-4">
@@ -3054,10 +3054,10 @@ export default function App() {
                           <p className="text-[10px] text-amber-400 font-medium uppercase tracking-widest">72% Reply probability</p>
                         </div>
                       </div>
-                      
+
                       <div className="p-5 bg-black/40 rounded-2xl border border-gray-800 shadow-inner group/email relative h-36 overflow-hidden">
                         <div className="absolute top-3 right-3 opacity-0 group-hover/email:opacity-100 transition-opacity z-20">
-                           <button 
+                           <button
                              onClick={() => {
                                const subject = result?.investorEmail?.subject || "Investment Opportunity";
                                const body = result?.investorEmail?.body || "";
@@ -3094,8 +3094,8 @@ export default function App() {
                            <p className="text-sm font-bold text-blue-400">88%</p>
                          </div>
                       </div>
-                      
-                      <button 
+
+                      <button
                         onClick={() => setActiveTab('email')}
                         className="w-full h-12 bg-accent hover:bg-blue-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-accent/20 flex items-center justify-center gap-2 text-sm"
                       >
@@ -3109,7 +3109,7 @@ export default function App() {
           )}
 
           {activeTab === 'history' && (
-            <motion.div 
+            <motion.div
               key="history"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -3117,13 +3117,13 @@ export default function App() {
               className="max-w-5xl mx-auto"
             >
               <h2 className="text-2xl font-bold text-white mb-8">My Saved Kits</h2>
-              
+
               {!user ? (
                 <div className="bg-gray-900 border border-border rounded-2xl p-12 text-center">
                   <UserIcon className="w-16 h-16 text-gray-700 mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-white mb-2">Login to see your history</h3>
                   <p className="text-muted-text mb-6">Apne generated kits ko save karne ke liye login karein.</p>
-                  <button 
+                  <button
                     onClick={() => signInWithGoogle()}
                     className="bg-accent text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-500 transition-all flex items-center gap-2 mx-auto"
                   >
@@ -3135,7 +3135,7 @@ export default function App() {
                   <Plus className="w-16 h-16 text-gray-700 mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-white mb-2">No kits found</h3>
                   <p className="text-muted-text mb-6">Abhi tak koi startup kit generate nahi kiya gaya.</p>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('home')}
                     className="bg-accent text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-500 transition-all flex items-center gap-2 mx-auto"
                   >
@@ -3145,7 +3145,7 @@ export default function App() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {history.map((kit) => (
-                    <motion.div 
+                    <motion.div
                       key={kit.id}
                       whileHover={{ y: -8, scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -3196,7 +3196,7 @@ export default function App() {
           )}
 
           {activeTab === 'map' && (
-            <motion.div 
+            <motion.div
               key="map"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -3207,11 +3207,11 @@ export default function App() {
                 <h2 className="text-2xl font-bold text-white">Investors Near You</h2>
                 <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
                   {cities.map(c => (
-                    <button 
-                      key={c} 
+                    <button
+                      key={c}
                       onClick={() => setSelectedCity(c)}
                       className={cn(
-                        "px-3 py-1 rounded-full text-xs border whitespace-nowrap transition-all", 
+                        "px-3 py-1 rounded-full text-xs border whitespace-nowrap transition-all",
                         c === selectedCity ? "bg-accent border-accent text-white" : "bg-gray-800 border-gray-700 text-muted-text hover:border-gray-500"
                       )}
                     >
@@ -3224,7 +3224,7 @@ export default function App() {
               <div className="bg-[#0D1B2A] h-[400px] md:h-[500px] rounded-2xl border border-border relative overflow-hidden mb-8">
                 {/* Map Controls */}
                 <div className="absolute top-4 right-4 flex gap-2 z-10">
-                  <button 
+                  <button
                     onClick={() => setMapType('roadmap')}
                     className={cn(
                       "px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all flex items-center gap-1.5 backdrop-blur-md",
@@ -3233,7 +3233,7 @@ export default function App() {
                   >
                     <MapIcon size={12} /> Roadmap
                   </button>
-                  <button 
+                  <button
                     onClick={() => setMapType('satellite')}
                     className={cn(
                       "px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all flex items-center gap-1.5 backdrop-blur-md",
@@ -3259,7 +3259,7 @@ export default function App() {
                   {(result && result.city === selectedCity && result.localInvestors ? result.localInvestors : investors.filter(inv => inv.city.toLowerCase() === selectedCity.toLowerCase())).map((inv: any, idx: number) => {
                     const position: [number, number] | null = inv.lat && inv.lng ? [inv.lat, inv.lng] : null;
                     if (!position) return null;
-                    
+
                     return (
                       <Marker
                         key={inv.id || idx}
@@ -3272,7 +3272,7 @@ export default function App() {
                           <div className="p-2 min-w-[150px]">
                             <p className="text-sm font-bold text-gray-900 mb-1">{inv.name}</p>
                             <p className="text-[10px] text-gray-600 mb-2 truncate">{inv.officeAddress || inv.fund}</p>
-                            <button 
+                            <button
                               onClick={() => {
                                 setSelectedInvestorForModal(inv);
                                 setSelectedInvestor(inv);
@@ -3288,7 +3288,7 @@ export default function App() {
                     );
                   })}
                 </MapContainer>
-                
+
                 <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-xs text-white flex items-center gap-2 z-10">
                   <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
                   📍 {selectedCity} — Showing real-time results from OpenStreetMap
@@ -3297,7 +3297,7 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(result && result.city === selectedCity && result.localInvestors ? result.localInvestors : investors.filter(inv => inv.city.toLowerCase() === selectedCity.toLowerCase())).map((inv: any, idx: number) => (
-                  <div 
+                  <div
                     key={inv.id || idx}
                     onClick={() => {
                       setSelectedInvestorForModal(inv);
@@ -3327,7 +3327,7 @@ export default function App() {
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-2">
-                      <button 
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedInvestorForMeeting(inv);
@@ -3337,15 +3337,15 @@ export default function App() {
                       >
                         Book Meeting
                       </button>
-                      <button 
+                      <button
                         className="text-accent text-xs font-bold group-hover:translate-x-1 transition-transform"
                       >
                         Details →
                       </button>
                       {inv.uri && (
-                        <a 
-                          href={inv.uri} 
-                          target="_blank" 
+                        <a
+                          href={inv.uri}
+                          target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
                           className="text-[10px] text-muted-text hover:text-white transition-colors flex items-center gap-1"
@@ -3362,21 +3362,21 @@ export default function App() {
               <AnimatePresence>
                 {selectedInvestorForModal && (
                   <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       onClick={() => setSelectedInvestorForModal(null)}
                       className="absolute inset-0 bg-black/80 backdrop-blur-sm"
                     />
-                    <motion.div 
+                    <motion.div
                       initial={{ scale: 0.9, opacity: 0, y: 20 }}
                       animate={{ scale: 1, opacity: 1, y: 0 }}
                       exit={{ scale: 0.9, opacity: 0, y: 20 }}
                       className="relative bg-gray-900 border border-border rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl"
                     >
                       <div className="h-32 bg-gradient-to-br from-accent/20 to-purple-500/20 relative">
-                        <button 
+                        <button
                           onClick={() => setSelectedInvestorForModal(null)}
                           className="absolute top-4 right-4 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-all"
                         >
@@ -3388,7 +3388,7 @@ export default function App() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="pt-14 p-8">
                         <div className="mb-6">
                           <h3 className="text-2xl font-bold text-white mb-1">{selectedInvestorForModal.name}</h3>
@@ -3422,7 +3422,7 @@ export default function App() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 mb-4">
-                          <button 
+                          <button
                             onClick={() => {
                               if (selectedInvestorForModal.uri) window.open(selectedInvestorForModal.uri, '_blank');
                             }}
@@ -3430,7 +3430,7 @@ export default function App() {
                           >
                             <ExternalLink size={16} /> Website
                           </button>
-                          <button 
+                          <button
                             onClick={() => {
                               setSelectedInvestor(selectedInvestorForModal);
                               setActiveTab('email');
@@ -3442,7 +3442,7 @@ export default function App() {
                           </button>
                         </div>
 
-                        <button 
+                        <button
                           onClick={() => {
                             setSelectedInvestorForMeeting(selectedInvestorForModal);
                             setActiveTab('scheduler');
@@ -3461,7 +3461,7 @@ export default function App() {
           )}
 
             {activeTab === 'email' && (
-              <motion.div 
+              <motion.div
                 key="email"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -3471,7 +3471,7 @@ export default function App() {
                 <h2 className="text-2xl font-bold text-white mb-8">✉️ Send Investor Email</h2>
 
                 {emailSent ? (
-                  <motion.div 
+                  <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     className="bg-gray-900 border border-border rounded-2xl p-12 text-center"
@@ -3481,7 +3481,7 @@ export default function App() {
                     </div>
                     <h3 className="text-3xl font-bold text-white mb-2">Email bhej diya! ✅</h3>
                     <p className="text-muted-text mb-8">{selectedInvestor?.name || "Investor"} ko email send ho gaya</p>
-                    <button 
+                    <button
                       onClick={() => {
                         setEmailSent(false);
                         setActiveTab('dashboard');
@@ -3503,7 +3503,7 @@ export default function App() {
                         <div key={i} className="relative z-10 flex flex-col items-center gap-2">
                           <div className={cn(
                             "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
-                            s.status === 'completed' ? "bg-accent text-white" : 
+                            s.status === 'completed' ? "bg-accent text-white" :
                             s.status === 'active' ? "bg-accent text-white ring-4 ring-accent/20" : "bg-gray-800 text-gray-500"
                           )}>
                             {s.status === 'completed' ? <CheckCircle2 size={16} /> : s.step}
@@ -3533,8 +3533,8 @@ export default function App() {
                       <div className="p-0">
                         <div className="flex items-center gap-4 p-4 border-b border-border">
                           <span className="text-gray-500 text-xs w-16">Subject</span>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             value={emailSubject}
                             onChange={(e) => setEmailSubject(e.target.value)}
                             className="bg-transparent text-white text-sm flex-1 outline-none"
@@ -3542,15 +3542,15 @@ export default function App() {
                         </div>
                         <div className="flex items-center gap-4 p-4 border-b border-border">
                           <span className="text-gray-500 text-xs w-16">To</span>
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             value={emailTo}
                             onChange={(e) => setEmailTo(e.target.value)}
                             className="bg-transparent text-white text-sm flex-1 outline-none"
                           />
                         </div>
                         <div className="p-4">
-                          <textarea 
+                          <textarea
                             rows={12}
                             value={emailBody}
                             onChange={(e) => setEmailBody(e.target.value)}
@@ -3558,7 +3558,7 @@ export default function App() {
                           />
                         </div>
                         <div className="p-3 border-t border-border bg-gray-800/20 flex items-center justify-between">
-                          <span className="text-gray-600 text-[10px] italic">— Sent via FounderAI</span>
+                          <span className="text-gray-600 text-[10px] italic">— Sent via StartWise AI</span>
                           <span className="text-gray-600 text-[10px]">{emailBody.split(/\s+/).filter(Boolean).length} words</span>
                         </div>
                       </div>
@@ -3568,7 +3568,7 @@ export default function App() {
                       <button className="flex-1 border border-gray-700 text-gray-300 hover:bg-white/5 rounded-xl py-4 font-medium transition-all flex items-center justify-center gap-2">
                         <Copy size={18} /> Save Draft
                       </button>
-                      <button 
+                      <button
                         onClick={handleSendEmail}
                         disabled={isSendingEmail}
                         className="flex-[2] bg-accent text-white hover:bg-blue-500 rounded-xl py-4 font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20 disabled:opacity-50"
@@ -3582,15 +3582,15 @@ export default function App() {
             )}
 
             {activeTab === 'scheduler' && (
-              <motion.div 
+              <motion.div
                 key="scheduler"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 className="max-w-6xl mx-auto"
               >
-                <MeetingScheduler 
-                  investor={selectedInvestorForMeeting || investors[0]} 
+                <MeetingScheduler
+                  investor={selectedInvestorForMeeting || investors[0]}
                   user={user}
                   onSchedule={handleScheduleMeeting}
                   isScheduling={isScheduling}
@@ -3605,13 +3605,13 @@ export default function App() {
             )}
 
             {activeTab === 'meetings' && (
-              <motion.div 
+              <motion.div
                 key="meetings"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
-                <MeetingScheduler 
+                <MeetingScheduler
                   user={user}
                   onBack={() => setActiveTab('dashboard')}
                 />
@@ -3619,7 +3619,7 @@ export default function App() {
             )}
 
             {activeTab === 'ppt-maker' && (
-              <PPTMaker 
+              <PPTMaker
                 pptData={pptData}
                 onGenerate={handleGeneratePPT}
                 isGenerating={isGeneratingPPT}
@@ -3665,7 +3665,7 @@ export default function App() {
             className="fixed inset-0 bg-black/45 backdrop-blur-[2px] z-[95]"
             onClick={() => setIsChatOpen(false)}
           />
-          <motion.div 
+          <motion.div
             initial={{ x: 120, opacity: 0, scale: 0.99 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 90, opacity: 0, scale: 0.995 }}
@@ -3682,12 +3682,12 @@ export default function App() {
                   <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-4 border-[#0B121F] rounded-full" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white tracking-tight">FounderAI Co-Pilot</h3>
+                  <h3 className="text-base font-bold text-white tracking-tight">StartWise AI Co-Pilot</h3>
                   <p className="text-[10px] text-accent/90 font-semibold uppercase tracking-widest">Startup Strategy Assistant</p>
                 </div>
               </div>
-              <button 
-                onClick={() => setIsChatOpen(false)} 
+              <button
+                onClick={() => setIsChatOpen(false)}
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5 text-gray-500 hover:text-white transition-all"
               >
                 <X className="w-5 h-5" />
@@ -3749,8 +3749,8 @@ export default function App() {
                 >
                   <div className={cn(
                     "max-w-[88%] p-4 sm:p-5 rounded-2xl text-sm sm:text-[15px] leading-relaxed shadow-lg",
-                    msg.role === 'user' 
-                      ? "bg-accent text-white rounded-tr-none" 
+                    msg.role === 'user'
+                      ? "bg-accent text-white rounded-tr-none"
                       : "bg-gray-800/50 text-gray-200 rounded-tl-none border border-white/5 backdrop-blur-sm"
                   )}>
                     <div className="prose prose-invert prose-sm max-w-none">
@@ -3761,7 +3761,7 @@ export default function App() {
                   </div>
                   {msg.role === 'assistant' && (
                     <div className="flex items-center gap-2 px-2">
-                      <button 
+                      <button
                         onClick={() => handleTTS(msg.content)}
                         className={cn(
                           "p-1.5 rounded-lg hover:bg-white/5 transition-all",
@@ -3778,7 +3778,7 @@ export default function App() {
                   )}
                 </motion.div>
               ))}
-              
+
               {isChatLoading && (
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center gap-2 text-[10px] text-accent font-bold uppercase tracking-widest ml-2">
@@ -3799,15 +3799,15 @@ export default function App() {
             {/* Input Area */}
             <div className="p-5 sm:p-6 border-t border-white/5 bg-gray-900/50">
               <div className="relative">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleChat()}
                   placeholder="Ask about pitch, market, or investors..."
                   className="w-full bg-gray-800/50 border border-white/10 rounded-2xl pl-4 pr-14 py-4 text-sm sm:text-base text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all placeholder:text-gray-500"
                 />
-                <button 
+                <button
                   onClick={handleChat}
                   disabled={isChatLoading || !chatInput.trim()}
                   className="absolute right-2 top-2 bottom-2 w-10 bg-accent hover:bg-blue-500 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-50 disabled:scale-95 shadow-lg shadow-accent/20"
@@ -3816,24 +3816,24 @@ export default function App() {
                 </button>
               </div>
               <p className="text-[10px] text-center text-gray-500 mt-4">
-                FounderAI can make mistakes. Verify important information.
+                StartWise AI can make mistakes. Verify important information.
               </p>
             </div>
           </motion.div>
           </>
         )}
       </AnimatePresence>
-      
+
       {/* FULL ANALYSIS MODAL */}
       <AnimatePresence>
         {showAnalysisModal && result?.fullMarketResearch && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -3850,7 +3850,7 @@ export default function App() {
                     <p className="text-xs text-muted-text">Comprehensive research for {result.startupName}</p>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={() => setShowAnalysisModal(false)}
                   className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
                 >
@@ -3863,7 +3863,7 @@ export default function App() {
                 <div className="prose prose-invert prose-blue max-w-none">
                   <Markdown>{result.fullMarketResearch}</Markdown>
                 </div>
-                
+
                 {/* Visual Flair in Modal */}
                 <div className="mt-8 grid grid-cols-2 gap-4 pb-4">
                   <div className="bg-gray-800/20 border border-gray-700/50 rounded-xl p-4 flex items-center gap-4">

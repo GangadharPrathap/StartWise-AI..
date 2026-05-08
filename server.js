@@ -9,7 +9,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
 // API Key Validation
-function getFirstEnv(...keys: string[]) {
+function getFirstEnv(...keys) {
   for (const key of keys) {
     const raw = process.env[key];
     if (raw && raw.trim()) {

@@ -52,7 +52,7 @@ import {
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import PptxGenJS from 'pptxgenjs';
-import { investors, type Investor, type AIResult, type Meeting, type PPTData, type PPTSlide } from './types';
+import { investors } from './data';
 import confetti from 'canvas-confetti';
 import {
   auth,
@@ -64,7 +64,6 @@ import {
 } from './firebase';
 import {
   onAuthStateChanged,
-  type User as FirebaseUser
 } from 'firebase/auth';
 import {
   collection,
@@ -99,9 +98,9 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 // --- Mock AI Engine for PPT ---
-function detectTopic(prompt: string) {
+function detectTopic(prompt) {
   const p = prompt.toLowerCase();
-  const map: Record<string, string[]> = {
+  const map = {
     food: ['food','tiffin','restaurant','delivery','kitchen','cook','meal','snack','cloud kitchen'],
     edtech: ['education','student','learn','teach','school','college','course','tutor','jee','neet'],
     health: ['health','doctor','medicine','hospital','fitness','medical','patient','clinic','pharma'],
@@ -115,12 +114,12 @@ function detectTopic(prompt: string) {
   return 'tech';
 }
 
-function extractOrGenerateName(prompt: string, topic: string) {
+function extractOrGenerateName(prompt, topic) {
   const words = prompt.split(' ');
   const caps = words.find(w => w.length > 3 && w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase());
   if(caps && caps.length > 3) return caps;
 
-  const names: Record<string, string[]> = {
+  const names = {
     food:['TiffinHub','FreshBox','GharKhana','MealMate','YumGo'],
     edtech:['LearnFast','VidyaAI','SmartGuru','StudyPro','GyanBox'],
     health:['DocNear','CareAI','SwasthApp','MedEasy','HealHub'],
@@ -133,25 +132,25 @@ function extractOrGenerateName(prompt: string, topic: string) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-function extractCity(prompt: string) {
+function extractCity(prompt) {
   const cities = ['Delhi','Mumbai','Bangalore','Hyderabad','Pune','Chennai','Kolkata','Ahmedabad','Jaipur','Lucknow'];
   const p = prompt.toLowerCase();
   return cities.find(c => p.includes(c.toLowerCase())) || 'Delhi NCR';
 }
 
-function extractFunding(prompt: string) {
+function extractFunding(prompt) {
   const match = prompt.match(/₹\s*\d+\s*(lakh|crore|L|Cr)/i);
   return match ? match[0] : null;
 }
 
-function getTitleEmoji(topic: string) {
-  const emojis: Record<string, string> = {
+function getTitleEmoji(topic) {
+  const emojis = {
     food:'🍕', edtech:'📚', health:'🏥', fintech:'💳', agri:'🌾', saas:'⚡', tech:'🚀'
   };
   return emojis[topic] || '🚀';
 }
 
-function selectSlides(templates: any[], count: number, type: string) {
+function selectSlides(templates, count, type) {
   if (!templates || templates.length === 0) return [];
 
   // 1. Start with title slide
@@ -178,14 +177,14 @@ function selectSlides(templates: any[], count: number, type: string) {
   return selected.slice(0, count);
 }
 
-function generatePresentationContent(prompt: string, slideCount: string, theme: string, language: string, type: string) {
+function generatePresentationContent(prompt, slideCount, theme, language, type) {
   const p = prompt.toLowerCase();
   const topic = detectTopic(p);
   const startupName = extractOrGenerateName(p, topic);
   const targetCity = extractCity(p);
   const fundingAsk = extractFunding(p);
 
-  const themeColors: Record<string, any> = {
+  const themeColors = {
     '🌑 Dark': { bgColor:'#0A0F2C', titleColor:'#FFFFFF', textColor:'#E5E7EB', accentColor:'#3B82F6', cardBg:'#111827', subtitleColor:'#93C5FD' },
     '🚀 Startup': { bgColor:'#0F172A', titleColor:'#FFFFFF', textColor:'#E2E8F0', accentColor:'#6366F1', cardBg:'#1E1B4B', subtitleColor:'#C4B5FD' },
     '💼 Corporate': { bgColor:'#1E293B', titleColor:'#FFFFFF', textColor:'#CBD5E1', accentColor:'#0EA5E9', cardBg:'#0F172A', subtitleColor:'#7DD3FC' },
@@ -196,7 +195,7 @@ function generatePresentationContent(prompt: string, slideCount: string, theme: 
 
   const t = themeColors[theme] || themeColors['🚀 Startup'];
 
-  const topicData: Record<string, any> = {
+  const topicData = {
     food: {
       market:'$8.4B', growth:'28% YoY', ask: fundingAsk || '₹50 Lakhs',
       pain:'Healthy affordable food unavailable', solution:'Cloud kitchen network',
@@ -458,7 +457,7 @@ function generatePresentationContent(prompt: string, slideCount: string, theme: 
 const API_URL = import.meta.env.VITE_API_BASE_URL || "";
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
 
-function formatGeminiError(error: unknown): string {
+function formatGeminiError(error) {
   const raw = error instanceof Error ? error.message : String(error || "Unknown error");
   const lower = raw.toLowerCase();
 
@@ -483,21 +482,14 @@ const MeetingScheduler = ({
   onSchedule,
   isScheduling: isSchedulingProp,
   success: successProp
-}: {
-  user: FirebaseUser | null;
-  onBack: () => void;
-  investor?: Investor;
-  onSchedule?: (data: any) => void;
-  isScheduling?: boolean;
-  success?: boolean;
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'book' | 'calendar' | 'meetings'>('book');
+  const [activeSubTab, setActiveSubTab] = useState('book');
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState("All");
-  const [selectedInvestor, setSelectedInvestor] = useState<any>(investor || null);
-  const [meetingType, setMeetingType] = useState<'online' | 'offline'>('online');
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [selectedInvestor, setSelectedInvestor] = useState(investor || null);
+  const [meetingType, setMeetingType] = useState('online');
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   const [startupName, setStartupName] = useState("");
   const [agenda, setAgenda] = useState("");
   const [isScheduling, setIsScheduling] = useState(false);
@@ -519,7 +511,7 @@ const MeetingScheduler = ({
     return matchesSearch && matchesCity;
   });
 
-  const handleSchedule = async (e: React.FormEvent) => {
+  const handleSchedule = async (e) => {
     e.preventDefault();
     if (!selectedInvestor || !selectedDate || !selectedTime) return;
 
@@ -622,7 +614,7 @@ const MeetingScheduler = ({
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveSubTab(tab.id as any)}
+              onClick={() => setActiveSubTab(tab.id)}
               className={cn(
                 "px-6 py-2 rounded-lg text-sm font-medium transition-all",
                 activeSubTab === tab.id ? "bg-[#111827] text-white shadow-lg" : "text-gray-400 hover:text-white"
@@ -913,7 +905,7 @@ const MeetingScheduler = ({
               </button>
             </div>
           ) : (
-            JSON.parse(localStorage.getItem('founder_meetings') || '[]').map((m: any) => (
+            JSON.parse(localStorage.getItem('founder_meetings') || '[]').map((m) => (
               <div key={m.id} className="bg-[#111827] border border-[#1F2937] rounded-2xl p-6 flex flex-col md:flex-row gap-6 items-center">
                 <div className="w-16 h-16 bg-accent/10 rounded-2xl flex flex-col items-center justify-center shrink-0 border border-accent/20">
                   <span className="text-accent font-bold text-xl">{m.date.split('-')[2]}</span>
@@ -944,7 +936,7 @@ const MeetingScheduler = ({
 };
 
 // --- Mock Dashboard Generation ---
-function generateMockDashboard(idea: string, city: string) {
+function generateMockDashboard(idea, city) {
   const topic = detectTopic(idea);
   const startupName = extractOrGenerateName(idea, topic);
 
@@ -958,7 +950,7 @@ function generateMockDashboard(idea: string, city: string) {
     tech: { tam: "$5.5B", growth: "31%", users: "1M", competitors: ["Player 1", "Player 2", "Player 3"] }
   };
 
-  const s = stats[topic as keyof typeof stats] || stats.tech;
+  const s = stats[topic] || stats.tech;
 
   return {
     startupName,
@@ -981,7 +973,7 @@ function generateMockDashboard(idea: string, city: string) {
     localInvestors: investors.filter(inv => inv.city === city || city === "All"),
     marketGrowth: s.growth,
     marketTrends: ["Digital Transformation", "Sustainability", "Direct-to-Consumer", "AI-Powered Personalization"],
-    riskLevel: "Medium" as const,
+    riskLevel: "Medium",
     thinkingAnalysis: `### 🧠 Strategic Deep-Dive: ${startupName}
 
 #### 🎯 Market Entry & Moat
@@ -1001,7 +993,7 @@ function generateMockDashboard(idea: string, city: string) {
 }
 
 // --- Map Helper ---
-function ChangeView({ center, zoom }: { center: [number, number], zoom: number }) {
+function ChangeView({ center, zoom }) {
   const map = useMap();
   useEffect(() => {
     map.setView(center, zoom);
@@ -1013,13 +1005,10 @@ function ChangeView({ center, zoom }: { center: [number, number], zoom: number }
 const MyMeetings = ({
   meetings,
   onCancel
-}: {
-  meetings: Meeting[];
-  onCancel: (id: string) => void;
 }) => {
-  const [reminders, setReminders] = useState<Record<string, boolean>>({});
+  const [reminders, setReminders] = useState({});
 
-  const handleSetReminder = (id: string) => {
+  const handleSetReminder = (id) => {
     setReminders(prev => ({...prev, [id]: true}));
     confetti({
       particleCount: 50,
@@ -1189,26 +1178,17 @@ const MyMeetings = ({
 };
 
 
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error: any;
-}
-
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+class ErrorBoundary extends React.Component {
+  constructor(props) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: any, errorInfo: any) {
+  componentDidCatch(error, errorInfo) {
     console.error("ErrorBoundary caught an error", error, errorInfo);
   }
 
@@ -1265,31 +1245,6 @@ const PPTMaker = ({
   isSpeaking,
   transition,
   setTransition
-}: {
-  pptData: PPTData | null;
-  onGenerate: () => void;
-  isGenerating: boolean;
-  loadingStep: number;
-  progress: number;
-  prompt: string;
-  setPrompt: (s: string) => void;
-  slidesCount: number;
-  setSlidesCount: (n: number) => void;
-  theme: string;
-  setTheme: (s: string) => void;
-  language: string;
-  setLanguage: (s: string) => void;
-  currentSlideIndex: number;
-  setCurrentSlideIndex: React.Dispatch<React.SetStateAction<number>>;
-  showSpeakerNotes: boolean;
-  setShowSpeakerNotes: (b: boolean) => void;
-  onDownload: () => void;
-  onRegenerate: () => void;
-  onEditPrompt: () => void;
-  onTTS: (text: string) => void;
-  isSpeaking: boolean;
-  transition: 'fade' | 'slide' | 'zoom';
-  setTransition: (t: 'fade' | 'slide' | 'zoom') => void;
 }) => {
   const loadingSteps = [
     "Prompt samajh raha hoon...",
@@ -1531,7 +1486,7 @@ const PPTMaker = ({
     slide: {
       initial: { opacity: 0, x: 50 },
       animate: { opacity: 1, x: 0 },
-      transition: { duration: 0.5, type: "spring" as any, damping: 20, stiffness: 100 }
+      transition: { duration: 0.5, type: "spring", damping: 20, stiffness: 100 }
     },
     zoom: {
       initial: { opacity: 0, scale: 0.9 },
@@ -1555,7 +1510,7 @@ const PPTMaker = ({
 
         <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center w-full md:w-auto">
           <div className="flex items-center bg-gray-900 border border-gray-800 rounded-lg p-1 md:mr-2">
-            {(['fade', 'slide', 'zoom'] as const).map(t => (
+            {['fade', 'slide', 'zoom'].map(t => (
               <button
                 key={t}
                 onClick={() => setTransition(t)}
@@ -1821,7 +1776,7 @@ const PPTMaker = ({
   );
 };
 
-const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }: { activeTab: string, setActiveTab: (t: any) => void, user: FirebaseUser | null, onToggleChat: () => void }) => {
+const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }) => {
   const menuItems = [
     { id: 'home', icon: HomeIcon, label: 'Home' },
     { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
@@ -1835,13 +1790,13 @@ const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }: { activeTab: s
   return (
     <aside className="fixed left-0 top-0 h-full w-16 xl:w-64 bg-sidebar-bg border-r border-border flex flex-col items-center xl:items-stretch py-6 z-50 transition-all">
       <div className="px-4 mb-10 flex items-center gap-3">
-        <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold text-xl">F</div>
+        <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold text-xl">SW</div>
         <span className="hidden xl:block font-bold text-xl tracking-tight">StartWiseAI</span>
       </div>
 
       <nav className="flex-1 w-full px-2 space-y-2">
         {menuItems.map((item) => (
-          <button
+          <button 
             key={item.id}
             onClick={() => setActiveTab(item.id)}
             className={cn(
@@ -1902,7 +1857,7 @@ const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }: { activeTab: s
   );
 };
 
-const LoadingOverlay = ({ step }: { step: number }) => {
+const LoadingOverlay = ({ step }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
     { text: "🔍 Analyzing Idea...", icon: <BrainCircuit className="w-5 h-5" /> },
@@ -1935,7 +1890,7 @@ const LoadingOverlay = ({ step }: { step: number }) => {
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold text-white mb-6 premium-gradient-text">Co-Founder is building...</h2>
+        <h2 className="text-2xl font-bold text-white mb-6 premium-gradient-text">StartWise AI is building...</h2>
 
         <div className="space-y-4 text-left">
           {steps.map((s, i) => (
@@ -1970,28 +1925,28 @@ const LoadingOverlay = ({ step }: { step: number }) => {
 
 export default function App() {
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [isGeneratingSlides, setIsGeneratingSlides] = useState(false);
-  const [activeTab, setActiveTab] = useState<'home' | 'dashboard' | 'map' | 'email' | 'meetings' | 'scheduler' | 'history' | 'ppt-maker'>('home');
+  const [activeTab, setActiveTab] = useState('home');
   const [idea, setIdea] = useState('');
   const [selectedCity, setSelectedCity] = useState('Delhi NCR');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
-  const [result, setResult] = useState<AIResult | null>(null);
-  const [selectedInvestor, setSelectedInvestor] = useState<Investor | null>(null);
+  const [result, setResult] = useState(null);
+  const [selectedInvestor, setSelectedInvestor] = useState(null);
   const [emailSent, setEmailSent] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [emailTo, setEmailTo] = useState('');
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
-  const [savedDecks, setSavedDecks] = useState<any[]>([]);
-  const [chatMessages, setChatMessages] = useState<{role: string, content: string}[]>([]);
+  const [savedDecks, setSavedDecks] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [thinkingResult, setThinkingResult] = useState<string | null>(null);
+  const [thinkingResult, setThinkingResult] = useState(null);
   const [isThinking, setIsThinking] = useState(false);
 
   // Auth Listener
@@ -2038,19 +1993,19 @@ export default function App() {
     }
   };
   const [additionalSlidesCount, setAdditionalSlidesCount] = useState(3);
-  const [history, setHistory] = useState<any[]>([]);
-  const [mapType, setMapType] = useState<'roadmap' | 'satellite'>('roadmap');
-  const [selectedInvestorForModal, setSelectedInvestorForModal] = useState<any | null>(null);
-  const [infoWindowData, setInfoWindowData] = useState<any | null>(null);
+  const [history, setHistory] = useState([]);
+  const [mapType, setMapType] = useState('roadmap');
+  const [selectedInvestorForModal, setSelectedInvestorForModal] = useState(null);
+  const [infoWindowData, setInfoWindowData] = useState(null);
 
   // Meeting State
-  const [meetings, setMeetings] = useState<Meeting[]>([]);
-  const [selectedInvestorForMeeting, setSelectedInvestorForMeeting] = useState<Investor | null>(null);
+  const [meetings, setMeetings] = useState([]);
+  const [selectedInvestorForMeeting, setSelectedInvestorForMeeting] = useState(null);
   const [isScheduling, setIsScheduling] = useState(false);
   const [schedulingSuccess, setSchedulingSuccess] = useState(false);
 
   // PPT Maker State
-  const [pptData, setPptData] = useState<PPTData | null>(null);
+  const [pptData, setPptData] = useState(null);
   const [isGeneratingPPT, setIsGeneratingPPT] = useState(false);
   const [pptPrompt, setPptPrompt] = useState('');
   const [pptSlidesCount, setPptSlidesCount] = useState(10);
@@ -2058,13 +2013,13 @@ export default function App() {
   const [pptLanguage, setPptLanguage] = useState('English');
   const [pptLoadingStep, setPptLoadingStep] = useState(0);
   const [pptProgress, setPptProgress] = useState(0);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [showSpeakerNotes, setShowSpeakerNotes] = useState(true);
-  const [pptTransition, setPptTransition] = useState<'fade' | 'slide' | 'zoom'>('fade');
+  const [pptTransition, setPptTransition] = useState('fade');
 
   const cities = ["Delhi NCR", "Mumbai", "Bangalore", "Hyderabad", "Pune", "Chennai"];
 
-  const cityCoords: Record<string, [number, number]> = {
+  const cityCoords = {
     "Delhi NCR": [28.6139, 77.2090],
     "Mumbai": [19.0760, 72.8777],
     "Bangalore": [12.9716, 77.5946],
@@ -2146,7 +2101,7 @@ export default function App() {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const meetingsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Meeting[];
+      const meetingsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setMeetings(meetingsData);
     }, (error) => {
       console.error("Firestore Error (meetings):", error);
@@ -2155,7 +2110,7 @@ export default function App() {
     return () => unsubscribe();
   }, [user]);
 
-  const handleScheduleMeeting = async (meetingData: any) => {
+  const handleScheduleMeeting = async (meetingData) => {
     if (!user) return;
     setIsScheduling(true);
     try {
@@ -2220,7 +2175,7 @@ export default function App() {
     }
   };
 
-  const handleCancelMeeting = async (meetingId: string) => {
+  const handleCancelMeeting = async (meetingId) => {
     try {
       await updateDoc(doc(db, 'meetings', meetingId), {
         status: 'cancelled'
@@ -2411,7 +2366,7 @@ export default function App() {
     }
   };
 
-  const handleTTS = async (text: string) => {
+  const handleTTS = async (text) => {
     if (isSpeaking) return;
     setIsSpeaking(true);
     try {
@@ -2992,7 +2947,7 @@ export default function App() {
                   </p>
 
                   <div className="space-y-2 max-h-48 overflow-y-auto mb-4 custom-scrollbar pr-2 relative z-10">
-                    {(result?.localInvestors || investors.slice(0, 5)).map((inv: any, idx: number) => (
+                    {(result?.localInvestors || investors.slice(0, 5)).map((inv, idx) => (
                       <div
                         key={inv.id || idx}
                         className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group/inv cursor-pointer"
@@ -3256,8 +3211,8 @@ export default function App() {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url={mapType === 'satellite' ? "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" : "https://{s}.tile.openstreetmap.org/{z}/{y}/{x}.png"}
                   />
-                  {(result && result.city === selectedCity && result.localInvestors ? result.localInvestors : investors.filter(inv => inv.city.toLowerCase() === selectedCity.toLowerCase())).map((inv: any, idx: number) => {
-                    const position: [number, number] | null = inv.lat && inv.lng ? [inv.lat, inv.lng] : null;
+                  {(result && result.city === selectedCity && result.localInvestors ? result.localInvestors : investors.filter(inv => inv.city.toLowerCase() === selectedCity.toLowerCase())).map((inv, idx) => {
+                    const position = inv.lat && inv.lng ? [inv.lat, inv.lng] : null;
                     if (!position) return null;
 
                     return (
@@ -3296,7 +3251,7 @@ export default function App() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(result && result.city === selectedCity && result.localInvestors ? result.localInvestors : investors.filter(inv => inv.city.toLowerCase() === selectedCity.toLowerCase())).map((inv: any, idx: number) => (
+                {(result && result.city === selectedCity && result.localInvestors ? result.localInvestors : investors.filter(inv => inv.city.toLowerCase() === selectedCity.toLowerCase())).map((inv, idx) => (
                   <div
                     key={inv.id || idx}
                     onClick={() => {
@@ -3319,7 +3274,7 @@ export default function App() {
                       </div>
                       <p className="text-muted-text text-xs line-clamp-1">{inv.officeAddress || inv.fund}</p>
                       <div className="flex gap-2 mt-2">
-                        {(inv.focus || ['Venture Capital', 'Startup']).map((f: string) => (
+                        {(inv.focus || ['Venture Capital', 'Startup']).map((f) => (
                           <span key={f} className="text-[9px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full border border-gray-700">
                             {f}
                           </span>
@@ -3413,7 +3368,7 @@ export default function App() {
                             <div>
                               <p className="text-[10px] text-muted-text uppercase font-bold tracking-wider">Investment Focus</p>
                               <div className="flex flex-wrap gap-2 mt-1">
-                                {(selectedInvestorForModal.focus || ['Seed', 'Series A', 'Consumer Tech']).map((f: string) => (
+                                {(selectedInvestorForModal.focus || ['Seed', 'Series A', 'Consumer Tech']).map((f) => (
                                   <span key={f} className="text-[10px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded-md border border-gray-700">{f}</span>
                                 ))}
                               </div>

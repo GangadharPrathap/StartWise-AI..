@@ -1,180 +1,49 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+body {
+  font-family: 'Inter', sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(255, 107, 0, 0.18), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(255, 140, 58, 0.08), transparent 25%),
+    #050816;
 
-  /* Premium Dark Orange Theme */
-  --color-primary-bg: #050816;
-  --color-secondary-bg: #0B1020;
-  --color-card-bg: rgba(17, 24, 39, 0.72);
-  --color-card-border: rgba(255, 255, 255, 0.08);
-
-  /* Orange Glow Palette */
-  --color-accent: #FF6B00;
-  --color-accent-light: #FF8C3A;
-  --color-accent-dark: #E65100;
-
-  /* Supporting Colors */
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
-  --color-text-muted: #9CA3AF;
-
-  /* Borders & Glass */
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-sidebar-bg: #070B1A;
-
-  /* Glow Effects */
-  --shadow-orange-glow: 0 0 30px rgba(255, 107, 0, 0.35);
-  --shadow-orange-soft: 0 0 60px rgba(255, 107, 0, 0.12);
+  color: white;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-@layer base {
-  body {
-    @apply text-white font-sans antialiased;
-    background:
-      radial-gradient(circle at top right, rgba(255, 107, 0, 0.18), transparent 30%),
-      radial-gradient(circle at bottom left, rgba(255, 140, 58, 0.08), transparent 25%),
-      #050816;
-  }
-
-  * {
-    border-color: var(--color-border);
-  }
-}
-
-/* Premium Glass Cards */
+/* Glass Card */
 .glass-card {
   background: rgba(17, 24, 39, 0.58);
   backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 4px 30px rgba(0, 0, 0, 0.35),
-    0 0 30px rgba(255, 107, 0, 0.08);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 24px;
-}
 
-/* Orange Glow Utilities */
-.orange-glow {
   box-shadow:
-    0 0 20px rgba(255, 107, 0, 0.35),
-    0 0 40px rgba(255, 107, 0, 0.15);
+    0 4px 30px rgba(0,0,0,0.35),
+    0 0 30px rgba(255,107,0,0.08);
 }
 
-.orange-border-glow {
-  border: 1px solid rgba(255, 107, 0, 0.45);
-  box-shadow: 0 0 18px rgba(255, 107, 0, 0.2);
-}
-
-/* Buttons */
+/* Button */
 .btn-primary {
-  background: linear-gradient(135deg,
-      #FF6B00 0%,
-      #FF8C3A 100%);
+  background: linear-gradient(
+    135deg,
+    #FF6B00 0%,
+    #FF8C3A 100%
+  );
+
   color: white;
   border-radius: 16px;
   transition: all 0.3s ease;
-  box-shadow: 0 0 25px rgba(255, 107, 0, 0.28);
+
+  box-shadow:
+    0 0 25px rgba(255,107,0,0.28);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
+
   box-shadow:
-    0 0 30px rgba(255, 107, 0, 0.45),
-    0 10px 40px rgba(255, 107, 0, 0.2);
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #050816;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 107, 0, 0.35);
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 107, 0, 0.55);
-}
-
-/* Pulse Glow Animation */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.33);
-    opacity: 1;
-  }
-
-  80%,
-  100% {
-    opacity: 0;
-  }
-}
-
-.pulse-ring {
-  position: relative;
-}
-
-.pulse-ring::before {
-  content: '';
-  position: absolute;
-  left: -100%;
-  top: -100%;
-  width: 300%;
-  height: 300%;
-  border-radius: 50%;
-  background: rgba(255, 107, 0, 0.28);
-  animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
-}
-
-/* Smooth Floating Effect */
-@keyframes float-card {
-
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.float-card {
-  animation: float-card 5s ease-in-out infinite;
-}
-
-/* Premium Hover Interaction */
-.hover-lift {
-  transition: all 0.35s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow:
-    0 0 30px rgba(255, 107, 0, 0.12),
-    0 20px 50px rgba(0, 0, 0, 0.35);
-}
-
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 107, 0, 0.35);
-  border-radius: 999px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 107, 0, 0.55);
+    0 0 35px rgba(255,107,0,0.42);
 }

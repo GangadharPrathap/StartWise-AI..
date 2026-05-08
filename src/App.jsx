@@ -765,7 +765,6 @@ const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }) => {
     { id: 'home', icon: HomeIcon, label: 'Home' },
     { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
     { id: 'map', icon: MapIcon, label: 'Investor Map' },
-    { id: 'history', icon: History, label: 'My Kits' },
     { id: 'email', icon: Mail, label: 'Email Sender' },
   ];
 

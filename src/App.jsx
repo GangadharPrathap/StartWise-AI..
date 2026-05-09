@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { gsap } from 'gsap';
 import './animations.css';
 import {
   Home as HomeIcon,
@@ -97,6 +98,37 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// --- Custom Cursor Component ---
+const CustomCursor = () => {
+  useEffect(() => {
+    const cursor = document.querySelector('.custom-cursor');
+    const outline = document.querySelector('.custom-cursor-outline');
+
+    const moveCursor = (e) => {
+      gsap.to(cursor, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.1
+      });
+      gsap.to(outline, {
+        x: e.clientX - 15,
+        y: e.clientY - 15,
+        duration: 0.3
+      });
+    };
+
+    window.addEventListener('mousemove', moveCursor);
+    return () => window.removeEventListener('mousemove', moveCursor);
+  }, []);
+
+  return (
+    <>
+      <div className="custom-cursor hidden md:block" />
+      <div className="custom-cursor-outline hidden md:block" />
+    </>
+  );
+};
+
 // --- Mock AI Engine for PPT ---
 function detectTopic(prompt) {
   const p = prompt.toLowerCase();
@@ -185,12 +217,12 @@ function generatePresentationContent(prompt, slideCount, theme, language, type) 
   const fundingAsk = extractFunding(p);
 
   const themeColors = {
-    '🌑 Dark': { bgColor:'#0A0F2C', titleColor:'#FFFFFF', textColor:'#E5E7EB', accentColor:'#3B82F6', cardBg:'#111827', subtitleColor:'#93C5FD' },
-    '🚀 Startup': { bgColor:'#0F172A', titleColor:'#FFFFFF', textColor:'#E2E8F0', accentColor:'#6366F1', cardBg:'#1E1B4B', subtitleColor:'#C4B5FD' },
-    '💼 Corporate': { bgColor:'#1E293B', titleColor:'#FFFFFF', textColor:'#CBD5E1', accentColor:'#0EA5E9', cardBg:'#0F172A', subtitleColor:'#7DD3FC' },
-    '☀️ Light': { bgColor:'#FFFFFF', titleColor:'#111827', textColor:'#374151', accentColor:'#3B82F6', cardBg:'#F8FAFC', subtitleColor:'#6B7280' },
-    '🎨 Colorful': { bgColor:'#1A0A2E', titleColor:'#FFFFFF', textColor:'#E9D5FF', accentColor:'#A855F7', cardBg:'#2D1B69', subtitleColor:'#C084FC' },
-    '💜 Purple': { bgColor:'#1E1B4B', titleColor:'#FFFFFF', textColor:'#E0E7FF', accentColor:'#818CF8', cardBg:'#312E81', subtitleColor:'#A5B4FC' }
+    '🌑 Dark': { bgColor:'#000000', titleColor:'#FFFFFF', textColor:'#E5E7EB', accentColor:'#FF6B00', cardBg:'#0A0A0A', subtitleColor:'#FF8C3A' },
+    '🚀 Startup': { bgColor:'#000000', titleColor:'#FFFFFF', textColor:'#E2E8F0', accentColor:'#FF6B00', cardBg:'#0F0F0F', subtitleColor:'#FF8C3A' },
+    '💼 Corporate': { bgColor:'#050505', titleColor:'#FFFFFF', textColor:'#CBD5E1', accentColor:'#FF6B00', cardBg:'#000000', subtitleColor:'#FF8C3A' },
+    '☀️ Light': { bgColor:'#FFFFFF', titleColor:'#111827', textColor:'#374151', accentColor:'#FF6B00', cardBg:'#F8FAFC', subtitleColor:'#6B7280' },
+    '🎨 Colorful': { bgColor:'#000000', titleColor:'#FFFFFF', textColor:'#FFD5CC', accentColor:'#FF6B00', cardBg:'#1A0A00', subtitleColor:'#FF8C3A' },
+    '💜 Purple': { bgColor:'#000000', titleColor:'#FFFFFF', textColor:'#FFE0CC', accentColor:'#FF6B00', cardBg:'#1B0A00', subtitleColor:'#FF8C3A' }
   };
 
   const t = themeColors[theme] || themeColors['🚀 Startup'];
@@ -580,8 +612,8 @@ const MyMeetings = ({
           <h2 className="text-2xl font-bold text-white">My Meetings</h2>
           <p className="text-sm text-muted-text">Track your upcoming and past investor sessions</p>
         </div>
-        <div className="px-4 py-2 bg-accent/10 border border-accent/20 rounded-lg text-accent text-xs font-medium">
-          {meetings.length} Total Sessions
+        <div className="px-4 py-2 glass3d animate-pulse-glow border border-accent/20 rounded-lg text-accent text-xs font-medium">
+          <span>{meetings.length} Total Sessions</span>
         </div>
       </div>
 
@@ -618,10 +650,10 @@ const MyMeetings = ({
                     </div>
                   </div>
                   <div className={cn(
-                    "px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider",
-                    isCancelled ? "bg-red-500/10 text-red-400" : "bg-green-500/10 text-green-400"
+                    "px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider glass3d tag-shimmer",
+                    isCancelled ? "text-red-400" : "text-green-400"
                   )}>
-                    {meeting.status}
+                    <span>{meeting.status}</span>
                   </div>
                 </div>
 
@@ -788,8 +820,8 @@ const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }) => {
             <item.icon size={24} />
             <span className="hidden xl:block font-medium">{item.label}</span>
             {item.badge && (
-              <span className="hidden xl:block absolute right-4 px-1.5 py-0.5 bg-accent text-white text-[10px] font-bold rounded uppercase tracking-wider">
-                {item.badge}
+              <span className="hidden xl:block absolute right-4 px-2 py-0.5 glass3d animate-float-slow tag-shimmer text-white text-[10px] font-bold rounded uppercase tracking-wider">
+                <span>{item.badge}</span>
               </span>
             )}
             {activeTab === item.id && (
@@ -1509,7 +1541,8 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-primary-bg flex">
+      <div className="min-h-screen bg-primary-bg flex selection:bg-accent selection:text-white">
+        <CustomCursor />
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} user={user} onToggleChat={() => setIsChatOpen(!isChatOpen)} />
 
         <main className="flex-1 ml-16 xl:ml-64 p-4 md:p-8 overflow-x-hidden">
@@ -1531,8 +1564,8 @@ export default function App() {
               className="max-w-4xl mx-auto pt-20 pb-20"
             >
               <div className="text-center mb-12">
-                <span className="inline-flex items-center px-4 py-1 rounded-full bg-[#1E3A5F] text-[#60A5FA] border border-accent text-sm font-medium mb-6">
-                  ✦ Powered by Groq AI
+                <span className="inline-flex items-center px-4 py-1 rounded-full glass3d animate-float-slow tag-shimmer text-accent border border-accent text-sm font-medium mb-6">
+                  {/* <span>✦ Powered by Groq AI</span> */}
                 </span>
                 <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">Your AI Co-Founder</h1>
                 <p className="text-xl text-muted-text">StartWiseAI is the best way to get your startup ideas</p>
@@ -1593,8 +1626,8 @@ export default function App() {
 
                 <div className="mt-6 flex justify-center gap-3 flex-wrap relative z-10">
                   {["📊 Market Research", "📑 Pitch Deck", "📍 Investor Map", "✉️ Email Draft"].map(f => (
-                    <span key={f} className="text-[10px] md:text-xs text-gray-500 bg-gray-800/30 px-3 py-1 rounded-full border border-gray-800/50">
-                      {f}
+                    <span key={f} className="text-[10px] md:text-xs text-gray-300 glass3d tag-hover-lift px-3 py-1 rounded-full border border-gray-800/50">
+                      <span>{f}</span>
                     </span>
                   ))}
                 </div>
@@ -1616,8 +1649,8 @@ export default function App() {
                   <p className="text-sm text-muted-text mt-1">Generated for: {idea.substring(0, 60)}...</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="bg-green-900/30 text-success border border-green-900/50 px-3 py-1 rounded-full text-sm flex items-center gap-2">
-                    <CheckCircle2 size={14} /> Analysis Complete
+                  <span className="glass3d tag-shimmer text-success border border-green-900/50 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                    <CheckCircle2 size={14} /> <span>Analysis Complete</span>
                   </span>
                 </div>
               </div>
@@ -1645,12 +1678,12 @@ export default function App() {
                         Market Analysis
                         {result?.riskLevel && (
                           <span className={cn(
-                            "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest",
-                            result.riskLevel === "Low" ? "bg-green-500/20 text-green-400" :
-                            result.riskLevel === "Medium" ? "bg-amber-500/20 text-amber-400" :
-                            "bg-red-500/20 text-red-400"
+                            "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest glass3d animate-pulse-glow",
+                            result.riskLevel === "Low" ? "text-green-400" :
+                            result.riskLevel === "Medium" ? "text-amber-400" :
+                            "text-red-400"
                           )}>
-                            {result.riskLevel} Risk
+                            <span>{result.riskLevel} Risk</span>
                           </span>
                         )}
                       </h3>
@@ -1710,8 +1743,8 @@ export default function App() {
                       <p className="text-[10px] text-muted-text mb-2 uppercase font-bold tracking-wider">Top Trends</p>
                       <div className="flex flex-wrap gap-1.5">
                         {result?.marketTrends?.map((trend, i) => (
-                          <span key={i} className="text-[9px] bg-white/5 border border-white/10 px-2 py-0.5 rounded-lg text-gray-400">
-                            {trend}
+                          <span key={i} className="text-[9px] glass3d tag-hover-lift px-2 py-0.5 rounded-lg text-gray-300">
+                            <span>{trend}</span>
                           </span>
                         ))}
                       </div>
@@ -1728,9 +1761,9 @@ export default function App() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5 }}
-                        className="text-white font-medium bg-accent/20 px-3 py-1 rounded-full"
+                        className="text-white font-medium glass3d tag-shimmer px-3 py-1 rounded-full"
                       >
-                        {result?.competitors.length || 3} companies
+                        <span>{result?.competitors.length || 3} companies</span>
                       </motion.span>
                     </div>
 
@@ -1770,9 +1803,9 @@ export default function App() {
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.7 + i * 0.05 }}
                           whileHover={{ scale: 1.05 }}
-                          className="bg-gradient-to-r from-gray-800/80 to-gray-700/60 text-gray-300 text-xs px-3 py-1 rounded-full border border-gray-600 hover:border-accent/30 cursor-default transition-colors"
+                          className="glass3d tag-hover-lift text-gray-300 text-xs px-3 py-1 rounded-full border border-gray-600 cursor-default transition-colors"
                         >
-                          {c.name}
+                          <span>{c.name}</span>
                         </motion.span>
                       ))}
                     </div>
@@ -1906,8 +1939,8 @@ export default function App() {
                         <p className="text-[10px] text-green-400 font-medium uppercase tracking-widest">Network Matches • {selectedCity}</p>
                       </div>
                     </div>
-                    <span className="bg-gray-800 text-gray-400 text-[10px] px-2 py-0.5 rounded-full">
-                      {result?.localInvestors?.length || investors.length} found
+                    <span className="glass3d tag-shimmer text-gray-400 text-[10px] px-2 py-0.5 rounded-full">
+                      <span>{result?.localInvestors?.length || investors.length} found</span>
                     </span>
                   </div>
                   <p className="text-muted-text text-xs mb-6 flex items-center gap-1 relative z-10">
@@ -2082,8 +2115,8 @@ export default function App() {
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="flex items-center justify-between mb-4 relative z-10">
-                        <span className="text-[10px] bg-accent/20 text-accent px-3 py-1 rounded-full border border-accent/30 font-bold uppercase tracking-wider">
-                          {kit.city}
+                        <span className="text-[10px] glass3d animate-float-slow tag-shimmer text-accent px-3 py-1 rounded-full border border-accent/30 font-bold uppercase tracking-wider">
+                          <span>{kit.city}</span>
                         </span>
                         <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium">
                           <Clock size={10} />
@@ -2144,7 +2177,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="bg-[#0D1B2A] h-[400px] md:h-[500px] rounded-2xl border border-border relative overflow-hidden mb-8">
+              <div className="bg-[#050505] h-[400px] md:h-[500px] rounded-2xl border border-border relative overflow-hidden mb-8">
                 {/* Map Controls */}
                 <div className="absolute top-4 right-4 flex gap-2 z-10">
                   <button
@@ -2238,13 +2271,13 @@ export default function App() {
                     <div className="flex-1 relative z-10">
                       <div className="flex items-center justify-between">
                         <h4 className="text-white font-semibold">{inv.name}</h4>
-                        {inv.distance && <span className="text-[10px] bg-green-900/30 text-success px-2 py-0.5 rounded-full">{inv.distance}</span>}
+                        {inv.distance && <span className="text-[10px] glass3d animate-pulse-glow text-success px-2 py-0.5 rounded-full"><span>{inv.distance}</span></span>}
                       </div>
                       <p className="text-muted-text text-xs line-clamp-1">{inv.officeAddress || inv.fund}</p>
                       <div className="flex gap-2 mt-2">
                         {(inv.focus || ['Venture Capital', 'Startup']).map((f) => (
-                          <span key={f} className="text-[9px] bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full border border-gray-700">
-                            {f}
+                          <span key={f} className="text-[9px] glass3d tag-hover-lift text-gray-400 px-2 py-0.5 rounded-full border border-gray-700">
+                            <span>{f}</span>
                           </span>
                         ))}
                       </div>
@@ -2593,7 +2626,7 @@ export default function App() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 90, opacity: 0, scale: 0.995 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="fixed left-2 right-2 top-2 bottom-2 sm:left-auto sm:right-4 sm:top-4 sm:bottom-4 sm:w-[min(92vw,680px)] lg:w-[700px] xl:w-[760px] bg-[#0B121F]/95 backdrop-blur-xl border border-white/10 z-[100] flex flex-col shadow-[0_0_70px_rgba(0,0,0,0.55)] rounded-2xl sm:rounded-3xl overflow-hidden"
+            className="fixed left-2 right-2 top-2 bottom-2 sm:left-auto sm:right-4 sm:top-4 sm:bottom-4 sm:w-[min(92vw,680px)] lg:w-[700px] xl:w-[760px] bg-[#050505]/95 backdrop-blur-xl border border-white/10 z-[100] flex flex-col shadow-[0_0_70px_rgba(0,0,0,0.85)] rounded-2xl sm:rounded-3xl overflow-hidden"
           >
             {/* Header */}
             <div className="p-5 sm:p-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-accent/10 to-transparent">
@@ -2606,7 +2639,7 @@ export default function App() {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-white tracking-tight">StartWise AI Co-Pilot</h3>
-                  <p className="text-[10px] text-accent/90 font-semibold uppercase tracking-widest">Startup Strategy Assistant</p>
+                    <p className="text-[10px] glass3d animate-float-slow tag-shimmer text-accent/90 font-semibold uppercase tracking-widest"><span>Startup Strategy Assistant</span></p>
                 </div>
               </div>
               <button
@@ -2634,7 +2667,7 @@ export default function App() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-2">Quick Prompts</p>
+                    <p className="text-[10px] font-bold glass3d tag-shimmer text-gray-400 uppercase tracking-widest px-3 py-1 rounded-lg"><span>Quick Prompts</span></p>
                     {[
                       { icon: Presentation, text: "Review my pitch deck", prompt: "Can you review my current pitch deck and suggest improvements?" },
                       { icon: TrendingUp, text: "Analyze market size", prompt: "Help me calculate the TAM, SAM, and SOM for my startup idea." },

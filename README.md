@@ -23,22 +23,21 @@ StartWise AI is a premium, AI-powered platform designed to help first-time India
 
 ## Production Deployment
 
-This app is production-ready. You can deploy it to a platform like **Railway** or **Render** in just a few steps:
+This app is production-ready. You can deploy it to a platform like **Vercel** in just a few steps:
 
-### Option 1: Railway (Recommended)
+### Option 1: Vercel (Recommended — Live)
+
+**Live URL:** https://start-wise-ai.vercel.app/
+
 1. Commit all your latest code to a GitHub repository.
-2. Go to [Railway.app](https://railway.app/) and create a new project from your GitHub repo.
-3. In the Railway dashboard for your project, go to **Variables** and add all the necessary secrets from your `.env` file (e.g., `GROQ_API_KEY`, `RESEND_API_KEY`).
-4. Railway will automatically detect the Node.js environment. It will run `npm install`, then `npm run build`, and finally use your `npm start` script to launch the app!
-5. After the build completes, Railway will provide you with a live URL.
+2. Go to [vercel.com](https://vercel.com/) and click **Add New Project**.
+3. Import your GitHub repository.
+4. Set the **Root Directory** to `frontend` (if your Next.js app is inside a frontend folder).
+5. Under **Environment Variables**, add:
+   - `NEXT_PUBLIC_API_URL` = your backend Railway/Render URL
+6. Click **Deploy** — Vercel auto-detects Next.js and handles build + deployment automatically.
+7. Every time you push to your main branch, Vercel redeploys automatically.
 
-### Option 2: Render
-1. Same as Railway—push your code to GitHub.
-2. Go to [Render.com](https://render.com/) and create a new **Web Service**.
-3. Point it to your GitHub repository.
-4. Set the **Build Command** to `npm install && npm run build` and the **Start Command** to `npm start`.
-5. Under the Environment tab, add your API keys.
-6. Click Save and Deploy.
 
 ## Design System
 - **Theme**: Deep Navy (#0A0F2C)

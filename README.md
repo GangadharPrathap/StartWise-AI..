@@ -25,18 +25,10 @@ StartWise AI is a premium, AI-powered platform designed to help first-time India
 
 This app is production-ready. You can deploy it to a platform like **Vercel** in just a few steps:
 
-### Option 1: Vercel (Recommended — Live)
+### : Vercel (Recommended — Live)
 
 **Live URL:** https://start-wise-ai.vercel.app/
 
-1. Commit all your latest code to a GitHub repository.
-2. Go to [vercel.com](https://vercel.com/) and click **Add New Project**.
-3. Import your GitHub repository.
-4. Set the **Root Directory** to `frontend` (if your Next.js app is inside a frontend folder).
-5. Under **Environment Variables**, add:
-   - `NEXT_PUBLIC_API_URL` = your backend Railway/Render URL
-6. Click **Deploy** — Vercel auto-detects Next.js and handles build + deployment automatically.
-7. Every time you push to your main branch, Vercel redeploys automatically.
 
 
 ## Design System

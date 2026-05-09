@@ -25,7 +25,7 @@ StartWise AI is a premium, AI-powered platform designed to help first-time India
 
 This app is production-ready. You can deploy it to a platform like **Vercel** in just a few steps:
 
-### : Vercel (Recommended — Live)
+###  Vercel (Recommended — Live)
 
 **Live URL:** https://start-wise-ai.vercel.app/
 

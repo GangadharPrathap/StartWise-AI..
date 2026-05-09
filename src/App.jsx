@@ -90,10 +90,10 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
@@ -133,15 +133,15 @@ const CustomCursor = () => {
 function detectTopic(prompt) {
   const p = prompt.toLowerCase();
   const map = {
-    food: ['food','tiffin','restaurant','delivery','kitchen','cook','meal','snack','cloud kitchen'],
-    edtech: ['education','student','learn','teach','school','college','course','tutor','jee','neet'],
-    health: ['health','doctor','medicine','hospital','fitness','medical','patient','clinic','pharma'],
-    fintech: ['money','payment','loan','invest','finance','bank','insurance','credit','upi'],
-    agri: ['farmer','farm','crop','agriculture','kisan','harvest','vegetable','grain'],
-    saas: ['software','tool','platform','dashboard','automation','crm','erp','management','workflow']
+    food: ['food', 'tiffin', 'restaurant', 'delivery', 'kitchen', 'cook', 'meal', 'snack', 'cloud kitchen'],
+    edtech: ['education', 'student', 'learn', 'teach', 'school', 'college', 'course', 'tutor', 'jee', 'neet'],
+    health: ['health', 'doctor', 'medicine', 'hospital', 'fitness', 'medical', 'patient', 'clinic', 'pharma'],
+    fintech: ['money', 'payment', 'loan', 'invest', 'finance', 'bank', 'insurance', 'credit', 'upi'],
+    agri: ['farmer', 'farm', 'crop', 'agriculture', 'kisan', 'harvest', 'vegetable', 'grain'],
+    saas: ['software', 'tool', 'platform', 'dashboard', 'automation', 'crm', 'erp', 'management', 'workflow']
   };
-  for(const [topic, words] of Object.entries(map)){
-    if(words.some(w => p.includes(w))) return topic;
+  for (const [topic, words] of Object.entries(map)) {
+    if (words.some(w => p.includes(w))) return topic;
   }
   return 'tech';
 }
@@ -149,23 +149,23 @@ function detectTopic(prompt) {
 function extractOrGenerateName(prompt, topic) {
   const words = prompt.split(' ');
   const caps = words.find(w => w.length > 3 && w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase());
-  if(caps && caps.length > 3) return caps;
+  if (caps && caps.length > 3) return caps;
 
   const names = {
-    food:['TiffinHub','FreshBox','GharKhana','MealMate','YumGo'],
-    edtech:['LearnFast','VidyaAI','SmartGuru','StudyPro','GyanBox'],
-    health:['DocNear','CareAI','SwasthApp','MedEasy','HealHub'],
-    fintech:['PayFast','DhanAI','MoneyMate','FinEasy','ArthPro'],
-    agri:['KisanHub','FarmDirect','FasalAI','GreenMart','AgroConnect'],
-    saas:['FlowAI','DashPro','StackUp','AutoMate','ScaleHub'],
-    tech:['TechHub','AppPro','DigiSolve','SmartApp','InnovatePro']
+    food: ['TiffinHub', 'FreshBox', 'GharKhana', 'MealMate', 'YumGo'],
+    edtech: ['LearnFast', 'VidyaAI', 'SmartGuru', 'StudyPro', 'GyanBox'],
+    health: ['DocNear', 'CareAI', 'SwasthApp', 'MedEasy', 'HealHub'],
+    fintech: ['PayFast', 'DhanAI', 'MoneyMate', 'FinEasy', 'ArthPro'],
+    agri: ['KisanHub', 'FarmDirect', 'FasalAI', 'GreenMart', 'AgroConnect'],
+    saas: ['FlowAI', 'DashPro', 'StackUp', 'AutoMate', 'ScaleHub'],
+    tech: ['TechHub', 'AppPro', 'DigiSolve', 'SmartApp', 'InnovatePro']
   };
   const list = names[topic] || names.tech;
   return list[Math.floor(Math.random() * list.length)];
 }
 
 function extractCity(prompt) {
-  const cities = ['Delhi','Mumbai','Bangalore','Hyderabad','Pune','Chennai','Kolkata','Ahmedabad','Jaipur','Lucknow'];
+  const cities = ['Delhi', 'Mumbai', 'Bangalore', 'Hyderabad', 'Pune', 'Chennai', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Lucknow'];
   const p = prompt.toLowerCase();
   return cities.find(c => p.includes(c.toLowerCase())) || 'Delhi NCR';
 }
@@ -177,7 +177,7 @@ function extractFunding(prompt) {
 
 function getTitleEmoji(topic) {
   const emojis = {
-    food:'🍕', edtech:'📚', health:'🏥', fintech:'💳', agri:'🌾', saas:'⚡', tech:'🚀'
+    food: '🍕', edtech: '📚', health: '🏥', fintech: '💳', agri: '🌾', saas: '⚡', tech: '🚀'
   };
   return emojis[topic] || '🚀';
 }
@@ -217,79 +217,79 @@ function generatePresentationContent(prompt, slideCount, theme, language, type) 
   const fundingAsk = extractFunding(p);
 
   const themeColors = {
-    '🌑 Dark': { bgColor:'#000000', titleColor:'#FFFFFF', textColor:'#E5E7EB', accentColor:'#FF6B00', cardBg:'#0A0A0A', subtitleColor:'#FF8C3A' },
-    '🚀 Startup': { bgColor:'#000000', titleColor:'#FFFFFF', textColor:'#E2E8F0', accentColor:'#FF6B00', cardBg:'#0F0F0F', subtitleColor:'#FF8C3A' },
-    '💼 Corporate': { bgColor:'#050505', titleColor:'#FFFFFF', textColor:'#CBD5E1', accentColor:'#FF6B00', cardBg:'#000000', subtitleColor:'#FF8C3A' },
-    '☀️ Light': { bgColor:'#FFFFFF', titleColor:'#111827', textColor:'#374151', accentColor:'#FF6B00', cardBg:'#F8FAFC', subtitleColor:'#6B7280' },
-    '🎨 Colorful': { bgColor:'#000000', titleColor:'#FFFFFF', textColor:'#FFD5CC', accentColor:'#FF6B00', cardBg:'#1A0A00', subtitleColor:'#FF8C3A' },
-    '💜 Purple': { bgColor:'#000000', titleColor:'#FFFFFF', textColor:'#FFE0CC', accentColor:'#FF6B00', cardBg:'#1B0A00', subtitleColor:'#FF8C3A' }
+    '🌑 Dark': { bgColor: '#000000', titleColor: '#FFFFFF', textColor: '#E5E7EB', accentColor: '#FF6B00', cardBg: '#0A0A0A', subtitleColor: '#FF8C3A' },
+    '🚀 Startup': { bgColor: '#000000', titleColor: '#FFFFFF', textColor: '#E2E8F0', accentColor: '#FF6B00', cardBg: '#0F0F0F', subtitleColor: '#FF8C3A' },
+    '💼 Corporate': { bgColor: '#050505', titleColor: '#FFFFFF', textColor: '#CBD5E1', accentColor: '#FF6B00', cardBg: '#000000', subtitleColor: '#FF8C3A' },
+    '☀️ Light': { bgColor: '#FFFFFF', titleColor: '#111827', textColor: '#374151', accentColor: '#FF6B00', cardBg: '#F8FAFC', subtitleColor: '#6B7280' },
+    '🎨 Colorful': { bgColor: '#000000', titleColor: '#FFFFFF', textColor: '#FFD5CC', accentColor: '#FF6B00', cardBg: '#1A0A00', subtitleColor: '#FF8C3A' },
+    '💜 Purple': { bgColor: '#000000', titleColor: '#FFFFFF', textColor: '#FFE0CC', accentColor: '#FF6B00', cardBg: '#1B0A00', subtitleColor: '#FF8C3A' }
   };
 
   const t = themeColors[theme] || themeColors['🚀 Startup'];
 
   const topicData = {
     food: {
-      market:'$8.4B', growth:'28% YoY', ask: fundingAsk || '₹50 Lakhs',
-      pain:'Healthy affordable food unavailable', solution:'Cloud kitchen network',
-      revenue:'15% commission + delivery fee', traction:'500+ orders/day in beta',
-      competitor1:'Zomato', c1w:'25-30% commission', competitor2:'Swiggy', c2w:'Not profitable',
-      competitor3:'EatSure', c3w:'Metro cities only',
-      stat1:{v:'28%',l:'Market Growth'}, stat2:{v:'₹350',l:'Avg Order Value'},
-      stat3:{v:'4.2x',l:'LTV:CAC Ratio'}, stat4:{v:'68%',l:'Repeat Order Rate'}
+      market: '$8.4B', growth: '28% YoY', ask: fundingAsk || '₹50 Lakhs',
+      pain: 'Healthy affordable food unavailable', solution: 'Cloud kitchen network',
+      revenue: '15% commission + delivery fee', traction: '500+ orders/day in beta',
+      competitor1: 'Zomato', c1w: '25-30% commission', competitor2: 'Swiggy', c2w: 'Not profitable',
+      competitor3: 'EatSure', c3w: 'Metro cities only',
+      stat1: { v: '28%', l: 'Market Growth' }, stat2: { v: '₹350', l: 'Avg Order Value' },
+      stat3: { v: '4.2x', l: 'LTV:CAC Ratio' }, stat4: { v: '68%', l: 'Repeat Order Rate' }
     },
     edtech: {
-      market:'$4.2B', growth:'39% YoY', ask: fundingAsk || '₹75 Lakhs',
-      pain:'Quality education too expensive', solution:'AI-powered personalized learning',
-      revenue:'₹499/month subscription', traction:'2000+ active learners',
-      competitor1:"Byju's", c1w:'Too expensive', competitor2:'Unacademy', c2w:'Low completion',
-      competitor3:'Vedantu', c3w:'High teacher cost',
-      stat1:{v:'39%',l:'Sector Growth'}, stat2:{v:'₹499',l:'Monthly Price'},
-      stat3:{v:'85%',l:'Completion Rate'}, stat4:{v:'4.8★',l:'User Rating'}
+      market: '$4.2B', growth: '39% YoY', ask: fundingAsk || '₹75 Lakhs',
+      pain: 'Quality education too expensive', solution: 'AI-powered personalized learning',
+      revenue: '₹499/month subscription', traction: '2000+ active learners',
+      competitor1: "Byju's", c1w: 'Too expensive', competitor2: 'Unacademy', c2w: 'Low completion',
+      competitor3: 'Vedantu', c3w: 'High teacher cost',
+      stat1: { v: '39%', l: 'Sector Growth' }, stat2: { v: '₹499', l: 'Monthly Price' },
+      stat3: { v: '85%', l: 'Completion Rate' }, stat4: { v: '4.8★', l: 'User Rating' }
     },
     health: {
-      market:'$6.1B', growth:'32% YoY', ask: fundingAsk || '₹1 Crore',
-      pain:'Good doctors inaccessible in tier 2', solution:'Instant doctor booking platform',
-      revenue:'₹50 per booking + medicine margin', traction:'1000+ patients served',
-      competitor1:'Practo', c1w:'Poor tier 2 coverage', competitor2:'PharmEasy', c2w:'Delivery slow',
-      competitor3:'1mg', c3w:'Trust issues',
-      stat1:{v:'50Cr+',l:'Potential Patients'}, stat2:{v:'32%',l:'Annual Growth'},
-      stat3:{v:'₹50',l:'Per Booking Revenue'}, stat4:{v:'90%',l:'Patient Satisfaction'}
+      market: '$6.1B', growth: '32% YoY', ask: fundingAsk || '₹1 Crore',
+      pain: 'Good doctors inaccessible in tier 2', solution: 'Instant doctor booking platform',
+      revenue: '₹50 per booking + medicine margin', traction: '1000+ patients served',
+      competitor1: 'Practo', c1w: 'Poor tier 2 coverage', competitor2: 'PharmEasy', c2w: 'Delivery slow',
+      competitor3: '1mg', c3w: 'Trust issues',
+      stat1: { v: '50Cr+', l: 'Potential Patients' }, stat2: { v: '32%', l: 'Annual Growth' },
+      stat3: { v: '₹50', l: 'Per Booking Revenue' }, stat4: { v: '90%', l: 'Patient Satisfaction' }
     },
     fintech: {
-      market:'$31B', growth:'22% YoY', ask: fundingAsk || '₹2 Crore',
-      pain:'Small businesses lack financial tools', solution:'All-in-one financial platform',
-      revenue:'0.5% transaction fee + subscription', traction:'200+ SMEs onboarded',
-      competitor1:'Razorpay', c1w:'Complex for SMEs', competitor2:'PhonePe Biz', c2w:'Limited features',
-      competitor3:'Paytm', c3w:'Too cluttered',
-      stat1:{v:'3Cr+',l:'Target SMEs'}, stat2:{v:'$31B',l:'Market Size'},
-      stat3:{v:'22%',l:'YoY Growth'}, stat4:{v:'200+',l:'Beta Customers'}
+      market: '$31B', growth: '22% YoY', ask: fundingAsk || '₹2 Crore',
+      pain: 'Small businesses lack financial tools', solution: 'All-in-one financial platform',
+      revenue: '0.5% transaction fee + subscription', traction: '200+ SMEs onboarded',
+      competitor1: 'Razorpay', c1w: 'Complex for SMEs', competitor2: 'PhonePe Biz', c2w: 'Limited features',
+      competitor3: 'Paytm', c3w: 'Too cluttered',
+      stat1: { v: '3Cr+', l: 'Target SMEs' }, stat2: { v: '$31B', l: 'Market Size' },
+      stat3: { v: '22%', l: 'YoY Growth' }, stat4: { v: '200+', l: 'Beta Customers' }
     },
     agri: {
-      market:'$2.3B', growth:'41% YoY', ask: fundingAsk || '₹50 Lakhs',
-      pain:'Farmers get 30% of actual value', solution:'Farm to consumer direct platform',
-      revenue:'8% commission both sides', traction:'50 farmers, 200 buyers active',
-      competitor1:'DeHaat', c1w:'Limited states', competitor2:'AgroStar', c2w:'Maharashtra only',
-      competitor3:'Ninjacart', c3w:'B2B only',
-      stat1:{v:'12Cr+',l:'Farmers in India'}, stat2:{v:'40%',l:'Extra Income for Farmers'},
-      stat3:{v:'30%',l:'Savings for Buyers'}, stat4:{v:'41%',l:'Sector Growth'}
+      market: '$2.3B', growth: '41% YoY', ask: fundingAsk || '₹50 Lakhs',
+      pain: 'Farmers get 30% of actual value', solution: 'Farm to consumer direct platform',
+      revenue: '8% commission both sides', traction: '50 farmers, 200 buyers active',
+      competitor1: 'DeHaat', c1w: 'Limited states', competitor2: 'AgroStar', c2w: 'Maharashtra only',
+      competitor3: 'Ninjacart', c3w: 'B2B only',
+      stat1: { v: '12Cr+', l: 'Farmers in India' }, stat2: { v: '40%', l: 'Extra Income for Farmers' },
+      stat3: { v: '30%', l: 'Savings for Buyers' }, stat4: { v: '41%', l: 'Sector Growth' }
     },
     saas: {
-      market:'$3.8B', growth:'35% YoY', ask: fundingAsk || '₹1.5 Crore',
-      pain:'SMEs waste time on manual tasks', solution:'AI automation platform',
-      revenue:'₹2999/month per company', traction:'50 paying companies',
-      competitor1:'Zoho', c1w:'Too complex', competitor2:'Freshworks', c2w:'Too expensive',
-      competitor3:'Spreadsheets', c3w:'Error-prone',
-      stat1:{v:'6Cr+',l:'Target SMEs'}, stat2:{v:'₹2999',l:'Monthly Price'},
-      stat3:{v:'35%',l:'Market Growth'}, stat4:{v:'50',l:'Paying Customers'}
+      market: '$3.8B', growth: '35% YoY', ask: fundingAsk || '₹1.5 Crore',
+      pain: 'SMEs waste time on manual tasks', solution: 'AI automation platform',
+      revenue: '₹2999/month per company', traction: '50 paying companies',
+      competitor1: 'Zoho', c1w: 'Too complex', competitor2: 'Freshworks', c2w: 'Too expensive',
+      competitor3: 'Spreadsheets', c3w: 'Error-prone',
+      stat1: { v: '6Cr+', l: 'Target SMEs' }, stat2: { v: '₹2999', l: 'Monthly Price' },
+      stat3: { v: '35%', l: 'Market Growth' }, stat4: { v: '50', l: 'Paying Customers' }
     },
     tech: {
-      market:'$5.5B', growth:'31% YoY', ask: fundingAsk || '₹75 Lakhs',
-      pain:'Problem not solved efficiently today', solution:'Technology-first modern solution',
-      revenue:'Freemium + Premium subscription', traction:'1000+ signups in beta',
-      competitor1:'Player 1', c1w:'Poor UX', competitor2:'Player 2', c2w:'Too expensive',
-      competitor3:'Player 3', c3w:'Outdated tech',
-      stat1:{v:'$5.5B',l:'Market Size'}, stat2:{v:'31%',l:'Annual Growth'},
-      stat3:{v:'1000+',l:'Beta Signups'}, stat4:{v:'8/10',l:'User Score'}
+      market: '$5.5B', growth: '31% YoY', ask: fundingAsk || '₹75 Lakhs',
+      pain: 'Problem not solved efficiently today', solution: 'Technology-first modern solution',
+      revenue: 'Freemium + Premium subscription', traction: '1000+ signups in beta',
+      competitor1: 'Player 1', c1w: 'Poor UX', competitor2: 'Player 2', c2w: 'Too expensive',
+      competitor3: 'Player 3', c3w: 'Outdated tech',
+      stat1: { v: '$5.5B', l: 'Market Size' }, stat2: { v: '31%', l: 'Annual Growth' },
+      stat3: { v: '1000+', l: 'Beta Signups' }, stat4: { v: '8/10', l: 'User Score' }
     }
   };
 
@@ -344,10 +344,10 @@ function generatePresentationContent(prompt, slideCount, theme, language, type) 
       content: 'Total addressable market analysis',
       bulletPoints: [],
       stats: [
-        {value: d.market, label: 'Total Market (TAM)'},
-        {value: d.growth, label: 'Annual Growth'},
-        {value: '10Cr+', label: 'Target Users'},
-        {value: targetCity, label: 'Launch City'}
+        { value: d.market, label: 'Total Market (TAM)' },
+        { value: d.growth, label: 'Annual Growth' },
+        { value: '10Cr+', label: 'Target Users' },
+        { value: targetCity, label: 'Launch City' }
       ],
       speakerNotes: 'Show bottom-up market calculation. TAM → SAM → SOM. Be conservative and credible.'
     },
@@ -389,10 +389,10 @@ function generatePresentationContent(prompt, slideCount, theme, language, type) 
       content: 'Proof that market wants this',
       bulletPoints: [],
       stats: [
-        {value: '1000+', label: 'Waitlist Users'},
-        {value: d.traction.split(' ')[0], label: 'Active Users'},
-        {value: '4.8★', label: 'Beta Rating'},
-        {value: '₹2L', label: 'LOIs Signed'}
+        { value: '1000+', label: 'Waitlist Users' },
+        { value: d.traction.split(' ')[0], label: 'Active Users' },
+        { value: '4.8★', label: 'Beta Rating' },
+        { value: '₹2L', label: 'LOIs Signed' }
       ],
       speakerNotes: 'Show growth chart if possible. Even small numbers with strong growth rate is powerful.'
     },
@@ -556,12 +556,12 @@ function generateMockDashboard(idea, city) {
 
 #### ⚖️ Risk-Opportunity Matrix
 - **Critical Risk**: Platform disintermediation. *Mitigation:* Focus on high-frequency user touchpoints and community rewards.
-- **Massive Opportunity**: Tier-2 & Tier-3 city expansion represents a **$${(Number(s.tam.replace(/[\$B]/g,'')) * 1.5).toFixed(1)}B** untapped market.
+- **Massive Opportunity**: Tier-2 & Tier-3 city expansion represents a **$${(Number(s.tam.replace(/[\$B]/g, '')) * 1.5).toFixed(1)}B** untapped market.
 
 #### 🚀 Scaling Path (0-100)
 1. **Pilot Phase**: Onboard 50 high-value power users in **${city}**.
 2. **Growth Loop**: Implement referral mechanics to reduce CAC by **35%**.
-3. **Series A**: Target **$${(Number(s.tam.replace(/[\$B]/g,'')) * 0.1).toFixed(1)}B** GMV before seeking institutional capital.`
+3. **Series A**: Target **$${(Number(s.tam.replace(/[\$B]/g, '')) * 0.1).toFixed(1)}B** GMV before seeking institutional capital.`
   };
 }
 
@@ -582,7 +582,7 @@ const MyMeetings = ({
   const [reminders, setReminders] = useState({});
 
   const handleSetReminder = (id) => {
-    setReminders(prev => ({...prev, [id]: true}));
+    setReminders(prev => ({ ...prev, [id]: true }));
     confetti({
       particleCount: 50,
       spread: 40,
@@ -792,83 +792,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const Sidebar = ({ activeTab, setActiveTab, user, onToggleChat }) => {
-  const menuItems = [
-    { id: 'home', icon: HomeIcon, label: 'Home' },
-    { id: 'dashboard', icon: BarChart3, label: 'Dashboard' },
-    { id: 'map', icon: MapIcon, label: 'Investor Map' },
-    { id: 'email', icon: Mail, label: 'Email Sender' },
-  ];
 
-  return (
-    <aside className="fixed left-0 top-0 h-full w-16 xl:w-64 bg-sidebar-bg border-r border-border flex flex-col items-center xl:items-stretch py-6 z-50 transition-all">
-      <div className="px-4 mb-10 flex items-center gap-3">
-        <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold text-xl">SW</div>
-        <span className="hidden xl:block font-bold text-xl tracking-tight">StartWiseAI</span>
-      </div>
-
-      <nav className="flex-1 w-full px-2 space-y-2">
-        {menuItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setActiveTab(item.id)}
-            className={cn(
-              "w-full flex items-center gap-4 px-3 py-3 rounded-xl transition-all group relative",
-              activeTab === item.id ? "bg-accent/10 text-accent" : "text-muted-text hover:bg-white/5 hover:text-white"
-            )}
-          >
-            <item.icon size={24} />
-            <span className="hidden xl:block font-medium">{item.label}</span>
-            {item.badge && (
-              <span className="hidden xl:block absolute right-4 px-2 py-0.5 glass3d animate-float-slow tag-shimmer text-white text-[10px] font-bold rounded uppercase tracking-wider">
-                <span>{item.badge}</span>
-              </span>
-            )}
-            {activeTab === item.id && (
-              <motion.div
-                layoutId="active-pill"
-                className="absolute left-0 w-1 h-6 bg-accent rounded-r-full"
-              />
-            )}
-          </button>
-        ))}
-
-        <button
-          onClick={onToggleChat}
-          className="w-full flex items-center gap-4 px-3 py-3 rounded-xl text-muted-text hover:bg-white/5 hover:text-white transition-all group relative"
-        >
-          <Send size={24} />
-          <span className="hidden xl:block font-medium">AI Assistant</span>
-          <span className="hidden xl:block absolute right-4 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-        </button>
-      </nav>
-
-      <div className="px-2 w-full space-y-2">
-        {user ? (
-          <div className="p-2 bg-gray-800/50 rounded-xl border border-gray-700/50 flex items-center gap-3 overflow-hidden">
-            <img src={user.photoURL || ''} alt="" className="w-8 h-8 rounded-full shrink-0" />
-            <div className="hidden xl:block overflow-hidden">
-              <p className="text-xs font-bold text-white truncate">{user.displayName}</p>
-              <button onClick={() => logout()} className="text-[10px] text-accent hover:underline">Logout</button>
-            </div>
-          </div>
-        ) : (
-          <button
-            onClick={() => signInWithGoogle()}
-            className="w-full flex items-center gap-4 px-3 py-3 rounded-xl text-accent hover:bg-accent/10 transition-all"
-          >
-            <LogIn size={24} />
-            <span className="hidden xl:block font-medium">Login</span>
-          </button>
-        )}
-        <button className="w-full flex items-center gap-4 px-3 py-3 rounded-xl text-muted-text hover:bg-white/5 hover:text-white transition-all">
-          <Settings size={24} />
-          <span className="hidden xl:block font-medium">Settings</span>
-        </button>
-      </div>
-    </aside>
-  );
-};
 
 const LoadingOverlay = ({ step }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -1440,20 +1364,20 @@ export default function App() {
       const slide = pptx.addSlide();
 
       // Background
-      slide.background = { color: (theme.bgColor || '#000000').replace('#','') };
+      slide.background = { color: (theme.bgColor || '#000000').replace('#', '') };
 
       // Top accent bar
       if (slideData.layoutType !== 'title') {
         slide.addShape(pptx.ShapeType.rect, {
           x: 0, y: 0, w: '100%', h: 0.08,
-          fill: { color: (theme.accentColor || '#3B82F6').replace('#','') }
+          fill: { color: (theme.accentColor || '#3B82F6').replace('#', '') }
         });
       }
 
       // Title
       slide.addText(slideData.title, {
         x: 0.5, y: 0.5, w: '90%', h: 0.8,
-        fontSize: 32, color: (theme.titleColor || '#FFFFFF').replace('#',''),
+        fontSize: 32, color: (theme.titleColor || '#FFFFFF').replace('#', ''),
         bold: true, align: pptx.AlignH.left,
         fontFace: 'Inter'
       });
@@ -1462,7 +1386,7 @@ export default function App() {
       if (slideData.content) {
         slide.addText(slideData.content, {
           x: 0.5, y: 1.4, w: '90%', h: 1,
-          fontSize: 18, color: (theme.textColor || '#E5E7EB').replace('#',''),
+          fontSize: 18, color: (theme.textColor || '#E5E7EB').replace('#', ''),
           align: pptx.AlignH.left,
           fontFace: 'Inter'
         });
@@ -1474,7 +1398,7 @@ export default function App() {
           slideData.bulletPoints.map(p => `• ${p}`).join('\n'),
           {
             x: 0.5, y: 2.5, w: '90%', h: 3,
-            fontSize: 16, color: (theme.textColor || '#E5E7EB').replace('#',''),
+            fontSize: 16, color: (theme.textColor || '#E5E7EB').replace('#', ''),
             align: pptx.AlignH.left,
             fontFace: 'Inter',
             lineSpacing: 24
@@ -1488,13 +1412,13 @@ export default function App() {
           const xPos = 0.5 + (idx * 2.5);
           slide.addText(stat.value, {
             x: xPos, y: 4.5, w: 2, h: 0.5,
-            fontSize: 28, color: (theme.accentColor || '#3B82F6').replace('#',''),
+            fontSize: 28, color: (theme.accentColor || '#3B82F6').replace('#', ''),
             bold: true, align: pptx.AlignH.left,
             fontFace: 'Inter'
           });
           slide.addText(stat.label, {
             x: xPos, y: 5.0, w: 2, h: 0.3,
-            fontSize: 12, color: (theme.textColor || '#E5E7EB').replace('#',''),
+            fontSize: 12, color: (theme.textColor || '#E5E7EB').replace('#', ''),
             align: pptx.AlignH.left,
             fontFace: 'Inter'
           });
@@ -1543,19 +1467,177 @@ export default function App() {
     <ErrorBoundary>
       <div className="min-h-screen bg-primary-bg flex selection:bg-accent selection:text-white">
         <CustomCursor />
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} user={user} onToggleChat={() => setIsChatOpen(!isChatOpen)} />
+        <nav className="fixed top-0 left-0 w-full z-50 px-6 pt-5">
+          <div className="max-w-7xl mx-auto">
 
-        <main className="flex-1 ml-16 xl:ml-64 p-4 md:p-8 overflow-x-hidden">
-          <AnimatePresence mode="wait">
-            {!isAuthReady && (
-              <div className="fixed inset-0 bg-primary-bg z-[200] flex items-center justify-center">
-                <Loader2 className="w-10 h-10 text-accent animate-spin" />
+            <motion.div
+              initial={{ y: -40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7 }}
+              className="
+        flex items-center justify-between
+        px-6 py-4
+        rounded-3xl
+        bg-white/5
+        backdrop-blur-2xl
+        border border-white/10
+        shadow-[0_8px_32px_rgba(0,0,0,0.45)]
+        relative overflow-hidden
+      "
+            >
+
+              {/* Animated Glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-orange-500/10 pointer-events-none" />
+
+              {/* LOGO */}
+              <div className="flex items-center gap-3 relative z-10">
+
+                <motion.div
+                  whileHover={{ rotate: 8, scale: 1.08 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="
+            w-11 h-11
+            rounded-2xl
+            bg-gradient-to-br from-orange-400 to-orange-600
+            flex items-center justify-center
+            text-white font-bold text-lg
+            shadow-[0_0_30px_rgba(255,115,0,0.4)]
+          "
+                >
+                  SW
+                </motion.div>
+
+                <div>
+                  <h1 className="text-white text-xl font-bold tracking-tight">
+                    StartWiseAI
+                  </h1>
+
+                  <p className="text-[11px] text-gray-400 -mt-1">
+                    AI Startup Copilot
+                  </p>
+                </div>
+
               </div>
-            )}
 
-            {isLoading && <LoadingOverlay step={loadingStep} />}
+              {/* CENTER NAV */}
+              <div className="hidden lg:flex items-center gap-3 relative z-10">
 
-            {activeTab === 'home' && (
+                {[
+                  { id: 'home', label: 'Home' },
+                  { id: 'dashboard', label: 'Dashboard' },
+                  { id: 'map', label: 'Investor Map' },
+                  { id: 'email', label: 'Email Sender' },
+                ].map((item) => (
+
+                  <motion.button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.96 }}
+                    className={`
+              relative px-5 py-2.5 rounded-2xl
+              text-sm font-medium transition-all duration-300
+              ${activeTab === item.id
+                        ? "text-white bg-orange-500/20 border border-orange-400/20 shadow-[0_0_20px_rgba(255,115,0,0.2)]"
+                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                      }
+            `}
+                  >
+
+                    {activeTab === item.id && (
+                      <motion.div
+                        layoutId="navbar-pill"
+                        className="absolute inset-0 rounded-2xl bg-orange-500/10 border border-orange-400/20"
+                        transition={{
+                          type: "spring",
+                          bounce: 0.25,
+                          duration: 0.6,
+                        }}
+                      />
+                    )}
+
+                    <span className="relative z-10">
+                      {item.label}
+                    </span>
+
+                  </motion.button>
+
+                ))}
+
+                <motion.button
+                  onClick={() => setIsChatOpen(!isChatOpen)}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="
+            px-5 py-2.5 rounded-2xl
+            text-sm font-medium
+            text-gray-400 hover:text-white
+            hover:bg-white/5
+            transition-all duration-300
+          "
+                >
+                  AI Assistant
+                </motion.button>
+
+              </div>
+
+              {/* RIGHT */}
+              <div className="flex items-center gap-4 relative z-10">
+
+                <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/10">
+                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                  <span className="text-xs text-gray-300">
+                    AI Active
+                  </span>
+                </div>
+
+                {user ? (
+                  <motion.img
+                    whileHover={{ scale: 1.08 }}
+                    src={user.photoURL}
+                    alt=""
+                    className="
+              w-11 h-11 rounded-2xl
+              border border-white/10
+              object-cover
+            "
+                  />
+                ) : (
+                  <motion.button
+                    onClick={() => signInWithGoogle()}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="
+              px-6 py-2.5
+              rounded-2xl
+              bg-gradient-to-r from-orange-500 to-orange-600
+              text-white font-medium
+              shadow-[0_0_30px_rgba(255,115,0,0.35)]
+              hover:shadow-[0_0_40px_rgba(255,115,0,0.55)]
+              transition-all duration-300
+            "
+                  >
+                    Login
+                  </motion.button>
+                )}
+
+              </div>
+
+            </motion.div>
+
+          </div>
+        </nav>
+
+        <main className="flex-1 pt-28 p-4 md:p-8 overflow-x-hidden">          <AnimatePresence mode="wait">
+          {!isAuthReady && (
+            <div className="fixed inset-0 bg-primary-bg z-[200] flex items-center justify-center">
+              <Loader2 className="w-10 h-10 text-accent animate-spin" />
+            </div>
+          )}
+
+          {isLoading && <LoadingOverlay step={loadingStep} />}
+
+          {activeTab === 'home' && (
             <motion.div
               key="home"
               initial={{ opacity: 0, y: 20 }}
@@ -1680,8 +1762,8 @@ export default function App() {
                           <span className={cn(
                             "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest glass3d animate-pulse-glow",
                             result.riskLevel === "Low" ? "text-green-400" :
-                            result.riskLevel === "Medium" ? "text-amber-400" :
-                            "text-red-400"
+                              result.riskLevel === "Medium" ? "text-amber-400" :
+                                "text-red-400"
                           )}>
                             <span>{result.riskLevel} Risk</span>
                           </span>
@@ -2013,17 +2095,17 @@ export default function App() {
 
                       <div className="p-5 bg-black/40 rounded-2xl border border-gray-800 shadow-inner group/email relative h-36 overflow-hidden">
                         <div className="absolute top-3 right-3 opacity-0 group-hover/email:opacity-100 transition-opacity z-20">
-                           <button
-                             onClick={() => {
-                               const subject = result?.investorEmail?.subject || "Investment Opportunity";
-                               const body = result?.investorEmail?.body || "";
-                               navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
-                               confetti({ particleCount: 50, spread: 40, origin: { y: 0.7 } });
-                             }}
-                             className="p-1.5 bg-gray-800 hover:bg-accent text-white rounded-lg transition-all"
-                           >
-                             <Share2 size={12} />
-                           </button>
+                          <button
+                            onClick={() => {
+                              const subject = result?.investorEmail?.subject || "Investment Opportunity";
+                              const body = result?.investorEmail?.body || "";
+                              navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
+                              confetti({ particleCount: 50, spread: 40, origin: { y: 0.7 } });
+                            }}
+                            className="p-1.5 bg-gray-800 hover:bg-accent text-white rounded-lg transition-all"
+                          >
+                            <Share2 size={12} />
+                          </button>
                         </div>
                         <div className="relative z-10">
                           <p className="text-amber-400 text-[10px] font-bold mb-1 truncate">Subject: {result?.investorEmail?.subject || "Investment Opportunity"}</p>
@@ -2041,14 +2123,14 @@ export default function App() {
 
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-3">
-                         <div className="p-3 bg-amber-900/10 border border-amber-900/20 rounded-xl text-center">
-                           <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Strength</p>
-                           <p className="text-sm font-bold text-amber-400">95%</p>
-                         </div>
-                         <div className="p-3 bg-blue-900/10 border border-blue-900/20 rounded-xl text-center">
-                           <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Clarity</p>
-                           <p className="text-sm font-bold text-blue-400">88%</p>
-                         </div>
+                        <div className="p-3 bg-amber-900/10 border border-amber-900/20 rounded-xl text-center">
+                          <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Strength</p>
+                          <p className="text-sm font-bold text-amber-400">95%</p>
+                        </div>
+                        <div className="p-3 bg-blue-900/10 border border-blue-900/20 rounded-xl text-center">
+                          <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Clarity</p>
+                          <p className="text-sm font-bold text-blue-400">88%</p>
+                        </div>
                       </div>
 
                       <button
@@ -2139,7 +2221,7 @@ export default function App() {
                         <div className="flex -space-x-2">
                           {[1, 2, 3].map(i => (
                             <div key={i} className="w-6 h-6 rounded-full border-2 border-gray-900 bg-accent/20 flex items-center justify-center">
-                               <Sparkles size={8} className="text-accent/50" />
+                              <Sparkles size={8} className="text-accent/50" />
                             </div>
                           ))}
                         </div>
@@ -2416,433 +2498,433 @@ export default function App() {
             </motion.div>
           )}
 
-            {activeTab === 'email' && (
+          {activeTab === 'email' && (
+            <motion.div
+              key="email"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="max-w-3xl mx-auto"
+            >
+              <h2 className="text-2xl font-bold text-white mb-8">✉️ Send Investor Email</h2>
+
+              {emailSent ? (
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="bg-gray-900 border border-border rounded-2xl p-12 text-center"
+                >
+                  <div className="w-20 h-20 bg-success/20 text-success rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle2 size={48} />
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-2">Email bhej diya! ✅</h3>
+                  <p className="text-muted-text mb-8">{selectedInvestor?.name || "Investor"} ko email send ho gaya</p>
+                  <button
+                    onClick={() => {
+                      setEmailSent(false);
+                      setActiveTab('dashboard');
+                    }}
+                    className="bg-accent text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-500 transition-all"
+                  >
+                    Back to Dashboard
+                  </button>
+                </motion.div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-8 relative">
+                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-gray-800 z-0" />
+                    {[
+                      { step: 1, label: 'Choose Investor', status: 'completed' },
+                      { step: 2, label: 'Edit Email', status: 'active' },
+                      { step: 3, label: 'Send', status: 'upcoming' }
+                    ].map((s, i) => (
+                      <div key={i} className="relative z-10 flex flex-col items-center gap-2">
+                        <div className={cn(
+                          "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                          s.status === 'completed' ? "bg-accent text-white" :
+                            s.status === 'active' ? "bg-accent text-white ring-4 ring-accent/20" : "bg-gray-800 text-gray-500"
+                        )}>
+                          {s.status === 'completed' ? <CheckCircle2 size={16} /> : s.step}
+                        </div>
+                        <span className={cn("text-[10px] font-medium", s.status === 'upcoming' ? "text-gray-500" : "text-white")}>
+                          {s.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-gray-900 rounded-2xl border border-border overflow-hidden">
+                    <div className="p-4 bg-gray-800/30 border-b border-border flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-muted-text text-xs">Sending to:</span>
+                        <div className="flex items-center gap-2 bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700">
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ backgroundColor: selectedInvestor?.color || '#3B82F6' }}>
+                            {selectedInvestor?.initials || 'AM'}
+                          </div>
+                          <span className="text-xs text-white font-medium">{selectedInvestor?.name || "Anupam Mittal"}</span>
+                          <button className="text-gray-500 hover:text-white"><X size={12} /></button>
+                        </div>
+                      </div>
+                      <button onClick={() => setActiveTab('map')} className="text-accent text-xs font-medium hover:underline">Change Investor</button>
+                    </div>
+
+                    <div className="p-0">
+                      <div className="flex items-center gap-4 p-4 border-b border-border">
+                        <span className="text-gray-500 text-xs w-16">Subject</span>
+                        <input
+                          type="text"
+                          value={emailSubject}
+                          onChange={(e) => setEmailSubject(e.target.value)}
+                          className="bg-transparent text-white text-sm flex-1 outline-none"
+                        />
+                      </div>
+                      <div className="flex items-center gap-4 p-4 border-b border-border">
+                        <span className="text-gray-500 text-xs w-16">To</span>
+                        <input
+                          type="text"
+                          value={emailTo}
+                          onChange={(e) => setEmailTo(e.target.value)}
+                          className="bg-transparent text-white text-sm flex-1 outline-none"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <textarea
+                          rows={12}
+                          value={emailBody}
+                          onChange={(e) => setEmailBody(e.target.value)}
+                          className="w-full bg-transparent text-gray-300 text-sm outline-none resize-none leading-relaxed"
+                        />
+                      </div>
+                      <div className="p-3 border-t border-border bg-gray-800/20 flex items-center justify-between">
+                        <span className="text-gray-600 text-[10px] italic">— Sent via StartWise AI</span>
+                        <span className="text-gray-600 text-[10px]">{emailBody.split(/\s+/).filter(Boolean).length} words</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 mt-8">
+                    <button className="flex-1 border border-gray-700 text-gray-300 hover:bg-white/5 rounded-xl py-4 font-medium transition-all flex items-center justify-center gap-2">
+                      <Copy size={18} /> Save Draft
+                    </button>
+                    <button
+                      onClick={handleSendEmail}
+                      disabled={isSendingEmail}
+                      className="flex-[2] bg-accent text-white hover:bg-blue-500 rounded-xl py-4 font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20 disabled:opacity-50"
+                    >
+                      {isSendingEmail ? "Sending..." : "Send Now 🚀"}
+                    </button>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          )}
+
+          {activeTab === 'scheduler' && (
+            <motion.div
+              key="scheduler"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="max-w-6xl mx-auto"
+            >
+              <MeetingScheduler
+                investor={selectedInvestorForMeeting || investors[0]}
+                user={user}
+                onSchedule={handleScheduleMeeting}
+                isScheduling={isScheduling}
+                success={schedulingSuccess}
+                onBack={() => {
+                  setActiveTab('dashboard');
+                  setSelectedInvestorForMeeting(null);
+                  setSchedulingSuccess(false);
+                }}
+              />
+            </motion.div>
+          )}
+
+          {activeTab === 'meetings' && (
+            <motion.div
+              key="meetings"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <MeetingScheduler
+                user={user}
+                onBack={() => setActiveTab('dashboard')}
+              />
+            </motion.div>
+          )}
+
+          {activeTab === 'ppt-maker' && (
+            <PPTMaker
+              pptData={pptData}
+              onGenerate={handleGeneratePPT}
+              isGenerating={isGeneratingPPT}
+              loadingStep={pptLoadingStep}
+              progress={pptProgress}
+              prompt={pptPrompt}
+              setPrompt={setPptPrompt}
+              slidesCount={pptSlidesCount}
+              setSlidesCount={setPptSlidesCount}
+              theme={pptTheme}
+              setTheme={setPptTheme}
+              language={pptLanguage}
+              setLanguage={setPptLanguage}
+              currentSlideIndex={currentSlideIndex}
+              setCurrentSlideIndex={setCurrentSlideIndex}
+              showSpeakerNotes={showSpeakerNotes}
+              setShowSpeakerNotes={setShowSpeakerNotes}
+              onDownload={handleDownloadPPTX}
+              onTTS={handleTTS}
+              isSpeaking={isSpeaking}
+              onRegenerate={() => {
+                setPptData(null);
+                setCurrentSlideIndex(0);
+              }}
+              onEditPrompt={() => {
+                setPptData(null);
+              }}
+              transition={pptTransition}
+              setTransition={setPptTransition}
+            />
+          )}
+        </AnimatePresence>
+        </main>
+        {/* Chat Panel (AI Co-Pilot) */}
+        <AnimatePresence>
+          {isChatOpen && (
+            <>
               <motion.div
-                key="email"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="max-w-3xl mx-auto"
-              >
-                <h2 className="text-2xl font-bold text-white mb-8">✉️ Send Investor Email</h2>
-
-                {emailSent ? (
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="bg-gray-900 border border-border rounded-2xl p-12 text-center"
-                  >
-                    <div className="w-20 h-20 bg-success/20 text-success rounded-full flex items-center justify-center mx-auto mb-6">
-                      <CheckCircle2 size={48} />
-                    </div>
-                    <h3 className="text-3xl font-bold text-white mb-2">Email bhej diya! ✅</h3>
-                    <p className="text-muted-text mb-8">{selectedInvestor?.name || "Investor"} ko email send ho gaya</p>
-                    <button
-                      onClick={() => {
-                        setEmailSent(false);
-                        setActiveTab('dashboard');
-                      }}
-                      className="bg-accent text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-500 transition-all"
-                    >
-                      Back to Dashboard
-                    </button>
-                  </motion.div>
-                ) : (
-                  <>
-                    <div className="flex items-center justify-between mb-8 relative">
-                      <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-gray-800 z-0" />
-                      {[
-                        { step: 1, label: 'Choose Investor', status: 'completed' },
-                        { step: 2, label: 'Edit Email', status: 'active' },
-                        { step: 3, label: 'Send', status: 'upcoming' }
-                      ].map((s, i) => (
-                        <div key={i} className="relative z-10 flex flex-col items-center gap-2">
-                          <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
-                            s.status === 'completed' ? "bg-accent text-white" :
-                            s.status === 'active' ? "bg-accent text-white ring-4 ring-accent/20" : "bg-gray-800 text-gray-500"
-                          )}>
-                            {s.status === 'completed' ? <CheckCircle2 size={16} /> : s.step}
-                          </div>
-                          <span className={cn("text-[10px] font-medium", s.status === 'upcoming' ? "text-gray-500" : "text-white")}>
-                            {s.label}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="bg-gray-900 rounded-2xl border border-border overflow-hidden">
-                      <div className="p-4 bg-gray-800/30 border-b border-border flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className="text-muted-text text-xs">Sending to:</span>
-                          <div className="flex items-center gap-2 bg-gray-800 px-3 py-1.5 rounded-full border border-gray-700">
-                            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ backgroundColor: selectedInvestor?.color || '#3B82F6' }}>
-                              {selectedInvestor?.initials || 'AM'}
-                            </div>
-                            <span className="text-xs text-white font-medium">{selectedInvestor?.name || "Anupam Mittal"}</span>
-                            <button className="text-gray-500 hover:text-white"><X size={12} /></button>
-                          </div>
-                        </div>
-                        <button onClick={() => setActiveTab('map')} className="text-accent text-xs font-medium hover:underline">Change Investor</button>
-                      </div>
-
-                      <div className="p-0">
-                        <div className="flex items-center gap-4 p-4 border-b border-border">
-                          <span className="text-gray-500 text-xs w-16">Subject</span>
-                          <input
-                            type="text"
-                            value={emailSubject}
-                            onChange={(e) => setEmailSubject(e.target.value)}
-                            className="bg-transparent text-white text-sm flex-1 outline-none"
-                          />
-                        </div>
-                        <div className="flex items-center gap-4 p-4 border-b border-border">
-                          <span className="text-gray-500 text-xs w-16">To</span>
-                          <input
-                            type="text"
-                            value={emailTo}
-                            onChange={(e) => setEmailTo(e.target.value)}
-                            className="bg-transparent text-white text-sm flex-1 outline-none"
-                          />
-                        </div>
-                        <div className="p-4">
-                          <textarea
-                            rows={12}
-                            value={emailBody}
-                            onChange={(e) => setEmailBody(e.target.value)}
-                            className="w-full bg-transparent text-gray-300 text-sm outline-none resize-none leading-relaxed"
-                          />
-                        </div>
-                        <div className="p-3 border-t border-border bg-gray-800/20 flex items-center justify-between">
-                          <span className="text-gray-600 text-[10px] italic">— Sent via StartWise AI</span>
-                          <span className="text-gray-600 text-[10px]">{emailBody.split(/\s+/).filter(Boolean).length} words</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4 mt-8">
-                      <button className="flex-1 border border-gray-700 text-gray-300 hover:bg-white/5 rounded-xl py-4 font-medium transition-all flex items-center justify-center gap-2">
-                        <Copy size={18} /> Save Draft
-                      </button>
-                      <button
-                        onClick={handleSendEmail}
-                        disabled={isSendingEmail}
-                        className="flex-[2] bg-accent text-white hover:bg-blue-500 rounded-xl py-4 font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20 disabled:opacity-50"
-                      >
-                        {isSendingEmail ? "Sending..." : "Send Now 🚀"}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </motion.div>
-            )}
-
-            {activeTab === 'scheduler' && (
-              <motion.div
-                key="scheduler"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="max-w-6xl mx-auto"
-              >
-                <MeetingScheduler
-                  investor={selectedInvestorForMeeting || investors[0]}
-                  user={user}
-                  onSchedule={handleScheduleMeeting}
-                  isScheduling={isScheduling}
-                  success={schedulingSuccess}
-                  onBack={() => {
-                    setActiveTab('dashboard');
-                    setSelectedInvestorForMeeting(null);
-                    setSchedulingSuccess(false);
-                  }}
-                />
-              </motion.div>
-            )}
-
-            {activeTab === 'meetings' && (
-              <motion.div
-                key="meetings"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <MeetingScheduler
-                  user={user}
-                  onBack={() => setActiveTab('dashboard')}
-                />
-              </motion.div>
-            )}
-
-            {activeTab === 'ppt-maker' && (
-              <PPTMaker
-                pptData={pptData}
-                onGenerate={handleGeneratePPT}
-                isGenerating={isGeneratingPPT}
-                loadingStep={pptLoadingStep}
-                progress={pptProgress}
-                prompt={pptPrompt}
-                setPrompt={setPptPrompt}
-                slidesCount={pptSlidesCount}
-                setSlidesCount={setPptSlidesCount}
-                theme={pptTheme}
-                setTheme={setPptTheme}
-                language={pptLanguage}
-                setLanguage={setPptLanguage}
-                currentSlideIndex={currentSlideIndex}
-                setCurrentSlideIndex={setCurrentSlideIndex}
-                showSpeakerNotes={showSpeakerNotes}
-                setShowSpeakerNotes={setShowSpeakerNotes}
-                onDownload={handleDownloadPPTX}
-                onTTS={handleTTS}
-                isSpeaking={isSpeaking}
-                onRegenerate={() => {
-                  setPptData(null);
-                  setCurrentSlideIndex(0);
-                }}
-                onEditPrompt={() => {
-                  setPptData(null);
-                }}
-                transition={pptTransition}
-                setTransition={setPptTransition}
-              />
-            )}
-        </AnimatePresence>
-      </main>
-      {/* Chat Panel (AI Co-Pilot) */}
-      <AnimatePresence>
-        {isChatOpen && (
-          <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className="fixed inset-0 bg-black/45 backdrop-blur-[2px] z-[95]"
-            onClick={() => setIsChatOpen(false)}
-          />
-          <motion.div
-            initial={{ x: 120, opacity: 0, scale: 0.99 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 90, opacity: 0, scale: 0.995 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            className="fixed left-2 right-2 top-2 bottom-2 sm:left-auto sm:right-4 sm:top-4 sm:bottom-4 sm:w-[min(92vw,680px)] lg:w-[700px] xl:w-[760px] bg-[#050505]/95 backdrop-blur-xl border border-white/10 z-[100] flex flex-col shadow-[0_0_70px_rgba(0,0,0,0.85)] rounded-2xl sm:rounded-3xl overflow-hidden"
-          >
-            {/* Header */}
-            <div className="p-5 sm:p-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-accent/10 to-transparent">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="w-12 h-12 bg-accent/20 rounded-2xl flex items-center justify-center border border-accent/30">
-                    <BrainCircuit className="text-accent w-6 h-6" />
-                  </div>
-                  <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-4 border-[#0B121F] rounded-full" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white tracking-tight">StartWise AI Co-Pilot</h3>
-                    <p className="text-[10px] glass3d animate-float-slow tag-shimmer text-accent/90 font-semibold uppercase tracking-widest"><span>Startup Strategy Assistant</span></p>
-                </div>
-              </div>
-              <button
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="fixed inset-0 bg-black/45 backdrop-blur-[2px] z-[95]"
                 onClick={() => setIsChatOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5 text-gray-500 hover:text-white transition-all"
+              />
+              <motion.div
+                initial={{ x: 120, opacity: 0, scale: 0.99 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: 90, opacity: 0, scale: 0.995 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="fixed left-2 right-2 top-2 bottom-2 sm:left-auto sm:right-4 sm:top-4 sm:bottom-4 sm:w-[min(92vw,680px)] lg:w-[700px] xl:w-[760px] bg-[#050505]/95 backdrop-blur-xl border border-white/10 z-[100] flex flex-col shadow-[0_0_70px_rgba(0,0,0,0.85)] rounded-2xl sm:rounded-3xl overflow-hidden"
               >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-5 sm:p-6 md:p-7 space-y-6 custom-scrollbar">
-              {chatMessages.length === 0 && (
-                <div className="space-y-8 py-4">
-                  <div className="text-center space-y-4">
-                    <div className="w-20 h-20 bg-accent/5 rounded-full flex items-center justify-center mx-auto border border-accent/10">
-                      <Sparkles className="text-accent/40 w-10 h-10" />
+                {/* Header */}
+                <div className="p-5 sm:p-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-accent/10 to-transparent">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-12 h-12 bg-accent/20 rounded-2xl flex items-center justify-center border border-accent/30">
+                        <BrainCircuit className="text-accent w-6 h-6" />
+                      </div>
+                      <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-4 border-[#0B121F] rounded-full" />
                     </div>
-                    <div className="space-y-2">
-                      <h4 className="text-white font-bold text-lg">Welcome, Founder!</h4>
-                      <p className="text-sm text-gray-400 px-4 leading-relaxed">
-                        Your AI co-pilot for pitch refinement, market analysis, and investor targeting.
-                      </p>
+                    <div>
+                      <h3 className="text-base font-bold text-white tracking-tight">StartWise AI Co-Pilot</h3>
+                      <p className="text-[10px] glass3d animate-float-slow tag-shimmer text-accent/90 font-semibold uppercase tracking-widest"><span>Startup Strategy Assistant</span></p>
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <p className="text-[10px] font-bold glass3d tag-shimmer text-gray-400 uppercase tracking-widest px-3 py-1 rounded-lg"><span>Quick Prompts</span></p>
-                    {[
-                      { icon: Presentation, text: "Review my pitch deck", prompt: "Can you review my current pitch deck and suggest improvements?" },
-                      { icon: TrendingUp, text: "Analyze market size", prompt: "Help me calculate the TAM, SAM, and SOM for my startup idea." },
-                      { icon: Users, text: "Find target investors", prompt: "Who are the top 5 investors I should target for my startup?" },
-                      { icon: Mail, text: "Draft investor email", prompt: "Draft a compelling cold email for a Seed round investor." }
-                    ].map((action, i) => (
-                      <motion.button
-                        key={i}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2, delay: i * 0.04 }}
-                        onClick={() => {
-                          setChatInput(action.prompt);
-                          // We don't auto-send to give user a chance to edit
-                        }}
-                        className="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-accent/35 hover:bg-accent/10 transition-all text-left group"
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-accent/20 transition-all">
-                          <action.icon className="w-4 h-4 text-gray-400 group-hover:text-accent" />
-                        </div>
-                        <span className="text-xs text-gray-300 group-hover:text-white font-medium">{action.text}</span>
-                      </motion.button>
-                    ))}
-                  </div>
+                  <button
+                    onClick={() => setIsChatOpen(false)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5 text-gray-500 hover:text-white transition-all"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
-              )}
 
-              {chatMessages.map((msg, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
-                  className={cn("flex flex-col gap-2", msg.role === 'user' ? "items-end" : "items-start")}
-                >
-                  <div className={cn(
-                    "max-w-[88%] p-4 sm:p-5 rounded-2xl text-sm sm:text-[15px] leading-relaxed shadow-lg",
-                    msg.role === 'user'
-                      ? "bg-accent text-white rounded-tr-none"
-                      : "bg-gray-800/50 text-gray-200 rounded-tl-none border border-white/5 backdrop-blur-sm"
-                  )}>
-                    <div className="prose prose-invert prose-sm max-w-none">
-                      <Markdown>
-                        {msg.content}
-                      </Markdown>
-                    </div>
-                  </div>
-                  {msg.role === 'assistant' && (
-                    <div className="flex items-center gap-2 px-2">
-                      <button
-                        onClick={() => handleTTS(msg.content)}
-                        className={cn(
-                          "p-1.5 rounded-lg hover:bg-white/5 transition-all",
-                          isSpeaking ? "text-accent" : "text-gray-500"
-                        )}
-                        title="Listen to response"
-                      >
-                        <Volume2 size={14} />
-                      </button>
-                      <button className="p-1.5 rounded-lg hover:bg-white/5 text-gray-500 transition-all" title="Copy response">
-                        <Quote size={14} />
-                      </button>
+                {/* Messages Area */}
+                <div className="flex-1 overflow-y-auto p-5 sm:p-6 md:p-7 space-y-6 custom-scrollbar">
+                  {chatMessages.length === 0 && (
+                    <div className="space-y-8 py-4">
+                      <div className="text-center space-y-4">
+                        <div className="w-20 h-20 bg-accent/5 rounded-full flex items-center justify-center mx-auto border border-accent/10">
+                          <Sparkles className="text-accent/40 w-10 h-10" />
+                        </div>
+                        <div className="space-y-2">
+                          <h4 className="text-white font-bold text-lg">Welcome, Founder!</h4>
+                          <p className="text-sm text-gray-400 px-4 leading-relaxed">
+                            Your AI co-pilot for pitch refinement, market analysis, and investor targeting.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <p className="text-[10px] font-bold glass3d tag-shimmer text-gray-400 uppercase tracking-widest px-3 py-1 rounded-lg"><span>Quick Prompts</span></p>
+                        {[
+                          { icon: Presentation, text: "Review my pitch deck", prompt: "Can you review my current pitch deck and suggest improvements?" },
+                          { icon: TrendingUp, text: "Analyze market size", prompt: "Help me calculate the TAM, SAM, and SOM for my startup idea." },
+                          { icon: Users, text: "Find target investors", prompt: "Who are the top 5 investors I should target for my startup?" },
+                          { icon: Mail, text: "Draft investor email", prompt: "Draft a compelling cold email for a Seed round investor." }
+                        ].map((action, i) => (
+                          <motion.button
+                            key={i}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2, delay: i * 0.04 }}
+                            onClick={() => {
+                              setChatInput(action.prompt);
+                              // We don't auto-send to give user a chance to edit
+                            }}
+                            className="flex items-center gap-3 p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-accent/35 hover:bg-accent/10 transition-all text-left group"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-accent/20 transition-all">
+                              <action.icon className="w-4 h-4 text-gray-400 group-hover:text-accent" />
+                            </div>
+                            <span className="text-xs text-gray-300 group-hover:text-white font-medium">{action.text}</span>
+                          </motion.button>
+                        ))}
+                      </div>
                     </div>
                   )}
-                </motion.div>
-              ))}
 
-              {isChatLoading && (
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2 text-[10px] text-accent font-bold uppercase tracking-widest ml-2">
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                    Thinking...
+                  {chatMessages.map((msg, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.18, ease: "easeOut" }}
+                      className={cn("flex flex-col gap-2", msg.role === 'user' ? "items-end" : "items-start")}
+                    >
+                      <div className={cn(
+                        "max-w-[88%] p-4 sm:p-5 rounded-2xl text-sm sm:text-[15px] leading-relaxed shadow-lg",
+                        msg.role === 'user'
+                          ? "bg-accent text-white rounded-tr-none"
+                          : "bg-gray-800/50 text-gray-200 rounded-tl-none border border-white/5 backdrop-blur-sm"
+                      )}>
+                        <div className="prose prose-invert prose-sm max-w-none">
+                          <Markdown>
+                            {msg.content}
+                          </Markdown>
+                        </div>
+                      </div>
+                      {msg.role === 'assistant' && (
+                        <div className="flex items-center gap-2 px-2">
+                          <button
+                            onClick={() => handleTTS(msg.content)}
+                            className={cn(
+                              "p-1.5 rounded-lg hover:bg-white/5 transition-all",
+                              isSpeaking ? "text-accent" : "text-gray-500"
+                            )}
+                            title="Listen to response"
+                          >
+                            <Volume2 size={14} />
+                          </button>
+                          <button className="p-1.5 rounded-lg hover:bg-white/5 text-gray-500 transition-all" title="Copy response">
+                            <Quote size={14} />
+                          </button>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+
+                  {isChatLoading && (
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-2 text-[10px] text-accent font-bold uppercase tracking-widest ml-2">
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        Thinking...
+                      </div>
+                      <div className="bg-gray-800/30 p-4 rounded-2xl rounded-tl-none border border-white/5 w-2/3">
+                        <div className="flex gap-1">
+                          <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity }} className="w-1.5 h-1.5 bg-accent rounded-full" />
+                          <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} className="w-1.5 h-1.5 bg-accent rounded-full" />
+                          <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity, delay: 0.4 }} className="w-1.5 h-1.5 bg-accent rounded-full" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Input Area */}
+                <div className="p-5 sm:p-6 border-t border-white/5 bg-gray-900/50">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleChat()}
+                      placeholder="Ask about pitch, market, or investors..."
+                      className="w-full bg-gray-800/50 border border-white/10 rounded-2xl pl-4 pr-14 py-4 text-sm sm:text-base text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all placeholder:text-gray-500"
+                    />
+                    <button
+                      onClick={handleChat}
+                      disabled={isChatLoading || !chatInput.trim()}
+                      className="absolute right-2 top-2 bottom-2 w-10 bg-accent hover:bg-blue-500 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-50 disabled:scale-95 shadow-lg shadow-accent/20"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
                   </div>
-                  <div className="bg-gray-800/30 p-4 rounded-2xl rounded-tl-none border border-white/5 w-2/3">
-                    <div className="flex gap-1">
-                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity }} className="w-1.5 h-1.5 bg-accent rounded-full" />
-                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} className="w-1.5 h-1.5 bg-accent rounded-full" />
-                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1, repeat: Infinity, delay: 0.4 }} className="w-1.5 h-1.5 bg-accent rounded-full" />
+                  <p className="text-[10px] text-center text-gray-500 mt-4">
+                    StartWise AI can make mistakes. Verify important information.
+                  </p>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* FULL ANALYSIS MODAL */}
+        <AnimatePresence>
+          {showAnalysisModal && result?.fullMarketResearch && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="bg-card-bg border border-gray-700/50 shadow-2xl rounded-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-gray-800/50 bg-gray-900/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent">
+                      <BarChart3 size={20} />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Full Market Analysis</h2>
+                      <p className="text-xs text-muted-text">Comprehensive research for {result.startupName}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowAnalysisModal(false)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
+                  <div className="prose prose-invert prose-blue max-w-none">
+                    <Markdown>{result.fullMarketResearch}</Markdown>
+                  </div>
+
+                  {/* Visual Flair in Modal */}
+                  <div className="mt-8 grid grid-cols-2 gap-4 pb-4">
+                    <div className="bg-gray-800/20 border border-gray-700/50 rounded-xl p-4 flex items-center gap-4">
+                      <Target className="w-8 h-8 text-green-400" />
+                      <div>
+                        <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Opportunity Score</p>
+                        <p className="text-2xl font-bold text-white">{result.opportunityScore}/10</p>
+                      </div>
+                    </div>
+                    <div className="bg-gray-800/20 border border-gray-700/50 rounded-xl p-4 flex items-center gap-4">
+                      <Users className="w-8 h-8 text-blue-400" />
+                      <div>
+                        <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Target Customer</p>
+                        <p className="text-sm font-bold text-white">{result.targetCustomer}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
-
-            {/* Input Area */}
-            <div className="p-5 sm:p-6 border-t border-white/5 bg-gray-900/50">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleChat()}
-                  placeholder="Ask about pitch, market, or investors..."
-                  className="w-full bg-gray-800/50 border border-white/10 rounded-2xl pl-4 pr-14 py-4 text-sm sm:text-base text-white focus:border-accent focus:ring-1 focus:ring-accent outline-none transition-all placeholder:text-gray-500"
-                />
-                <button
-                  onClick={handleChat}
-                  disabled={isChatLoading || !chatInput.trim()}
-                  className="absolute right-2 top-2 bottom-2 w-10 bg-accent hover:bg-blue-500 text-white rounded-xl flex items-center justify-center transition-all disabled:opacity-50 disabled:scale-95 shadow-lg shadow-accent/20"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-              <p className="text-[10px] text-center text-gray-500 mt-4">
-                StartWise AI can make mistakes. Verify important information.
-              </p>
-            </div>
-          </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* FULL ANALYSIS MODAL */}
-      <AnimatePresence>
-        {showAnalysisModal && result?.fullMarketResearch && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-card-bg border border-gray-700/50 shadow-2xl rounded-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-800/50 bg-gray-900/30">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent">
-                    <BarChart3 size={20} />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-white">Full Market Analysis</h2>
-                    <p className="text-xs text-muted-text">Comprehensive research for {result.startupName}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowAnalysisModal(false)}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
-              {/* Content */}
-              <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
-                <div className="prose prose-invert prose-blue max-w-none">
-                  <Markdown>{result.fullMarketResearch}</Markdown>
-                </div>
-
-                {/* Visual Flair in Modal */}
-                <div className="mt-8 grid grid-cols-2 gap-4 pb-4">
-                  <div className="bg-gray-800/20 border border-gray-700/50 rounded-xl p-4 flex items-center gap-4">
-                     <Target className="w-8 h-8 text-green-400" />
-                     <div>
-                       <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Opportunity Score</p>
-                       <p className="text-2xl font-bold text-white">{result.opportunityScore}/10</p>
-                     </div>
-                  </div>
-                  <div className="bg-gray-800/20 border border-gray-700/50 rounded-xl p-4 flex items-center gap-4">
-                     <Users className="w-8 h-8 text-blue-400" />
-                     <div>
-                       <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Target Customer</p>
-                       <p className="text-sm font-bold text-white">{result.targetCustomer}</p>
-                     </div>
-                  </div>
-                </div>
-              </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+          )}
+        </AnimatePresence>
+      </div>
     </ErrorBoundary>
   );
 }

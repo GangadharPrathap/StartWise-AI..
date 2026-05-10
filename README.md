@@ -60,15 +60,6 @@ StartWise AI acts as an intelligent AI co-founder that helps founders analyze st
 
 ---
 
-## 📊 AI Pitch Deck Generator
-- Investor-ready pitch deck outlines
-- Problem & solution framing
-- Market sizing assistance
-- Business model generation
-- AI storytelling support
-
----
-
 ## 📍 Investors Near Me
 - Location-based investor discovery
 - Indian startup ecosystem mapping

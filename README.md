@@ -101,6 +101,7 @@ The frontend delivers a futuristic premium SaaS interface with responsive layout
 ## Backend
 - Node.js
 - Express.js
+- Python
 
 The backend securely handles:
 - AI API requests

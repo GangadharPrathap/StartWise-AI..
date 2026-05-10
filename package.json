@@ -9,9 +9,10 @@
     "build:client": "vite build",
     "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist/server.js --external:vite --external:express --external:groq-sdk --external:resend --external:cors --external:dotenv --external:helmet --external:express-rate-limit",
     "start": "node dist/server.js",
-    "preview": "vite preview",
+    "preview": "npm run build:client && wrangler dev",
     "clean": "rm -rf dist",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "deploy": "npm run build:client && wrangler deploy"
   },
   "dependencies": {
     "@daily-co/daily-js": "^0.89.1",
@@ -44,6 +45,7 @@
     "vite": "^6.2.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.36.3",
     "@eslint/js": "^9.39.4",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.27.7",
@@ -53,6 +55,7 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "tailwindcss": "^4.1.14",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "wrangler": "^4.90.0"
   }
 }

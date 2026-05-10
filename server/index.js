@@ -6,15 +6,17 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
 import { PORT, APP_HOSTNAME } from "./config/env.js";
-import aiRoutes from "./routes/aiRoutes.js";
-import emailRoutes from "./routes/emailRoutes.js";
-import meetingRoutes from "./routes/meetingRoutes.js";
-import vcRoutes from "./routes/vcRoutes.js";
+import apiRouter from "./routes/apiRouter.js";
 import { requestLogger } from "./middleware/logger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
+import db from "./services/dbService.js";
+
 async function startServer() {
   const app = express();
+  
+  // Initialize Database
+  await db.init();
 
   // Middleware
   app.use(express.json());
@@ -28,10 +30,26 @@ async function startServer() {
       contentSecurityPolicy: {
         directives: {
           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-          "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://unpkg.com", "https://cdn.jsdelivr.net", "https://apis.google.com", "https://*.firebaseapp.com"],
-          "img-src": ["'self'", "data:", "https:", "http:", "https://*.tile.openstreetmap.org", "https://*.google.com", "https://*.googleusercontent.com"],
-          "connect-src": ["'self'", "https:", "http:", "ws:", "wss:", "https://*.googleapis.com", "https://*.firebaseapp.com"],
-          "frame-src": ["'self'", "https://*.firebaseapp.com"],
+          "script-src": [
+            "'self'", "'unsafe-inline'", "'unsafe-eval'", 
+            "https://unpkg.com", "https://cdn.jsdelivr.net", 
+            "https://apis.google.com", "https://*.firebaseapp.com", 
+            "https://www.googletagmanager.com", "https://maps.googleapis.com"
+          ],
+          "img-src": [
+            "'self'", "data:", "https:", "http:", 
+            "https://*.tile.openstreetmap.org", "https://*.google.com", 
+            "https://*.googleusercontent.com", "https://www.google-analytics.com"
+          ],
+          "connect-src": [
+            "'self'", "https:", "http:", "ws:", "wss:", 
+            "https://*.googleapis.com", "https://*.firebaseapp.com", 
+            "https://www.google-analytics.com", "https://analytics.google.com",
+            "https://firebaseinstallations.googleapis.com"
+          ],
+          "frame-src": ["'self'", "https://*.firebaseapp.com", "https://apis.google.com"],
+          "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://unpkg.com"],
+          "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
         },
       },
     })
@@ -55,10 +73,7 @@ async function startServer() {
   });
 
   // Routes
-  app.use("/api/ai", aiRoutes);
-  app.use("/api/email", emailRoutes);
-  app.use("/api/meetings", meetingRoutes);
-  app.use("/api/vc", vcRoutes);
+  app.use("/api", apiRouter);
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

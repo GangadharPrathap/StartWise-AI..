@@ -1,12 +1,21 @@
 import express from "express";
-import * as vcController from "../controllers/vcController.js";
-import { requireAuth } from "../middleware/auth.js";
+import multer from "multer";
+import { vcController } from "../controllers/vcController.js";
 
 const router = express.Router();
+const upload = multer({ dest: 'uploads/' });
 
-// You can apply requireAuth middleware to protect these routes
+/**
+ * AI VC Simulator Routes
+ */
+
+// Lifecycle
+router.post("/start-session", vcController.startSession);
+router.post("/evaluate", vcController.evaluate);
+
+// Interaction
 router.post("/chat", vcController.processChat);
-router.post("/voice", vcController.processVoice);
-router.post("/score", vcController.getScore);
+router.post("/speech-to-text", upload.single('audio'), vcController.processSpeechToText);
+router.post("/text-to-speech", vcController.processTextToSpeech);
 
 export default router;

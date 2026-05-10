@@ -1,43 +1,80 @@
-import { catchAsync } from "../utils/catchAsync.js";
-import { sendSuccess, sendError } from "../utils/responseFormatter.js";
-import * as aiService from "../services/geminiService.js";
+import vcConversationService from "../services/vcConversationService.js";
+import vcScoringService from "../services/vcScoringService.js";
+import sarvamService from "../services/sarvamService.js";
+import vcPromptService from "../services/vcPromptService.js";
 
-export const processChat = catchAsync(async (req, res, next) => {
-  const { message, context } = req.body;
-  
-  if (!message) {
-    return sendError(res, "Message is required", 400);
+/**
+ * VC Controller: Unified API for Simulator Sessions
+ */
+export const vcController = {
+  /**
+   * Start Session: POST /api/vc/start-session
+   */
+  async startSession(req, res, next) {
+    try {
+      const { persona } = req.body;
+      const initialData = await vcConversationService.startSession(persona);
+      res.json({ status: 'success', data: initialData });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * Chat: POST /api/vc/chat
+   */
+  async processChat(req, res, next) {
+    try {
+      const { message, history, persona } = req.body;
+      const aiData = await vcConversationService.processChat(message, history, persona);
+      res.json({ status: 'success', data: aiData });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * Evaluate: POST /api/vc/evaluate
+   */
+  async evaluate(req, res, next) {
+    try {
+      const { history, persona } = req.body;
+      const personaName = vcPromptService.personas[persona]?.name || "Senior VC";
+      const evaluation = await vcScoringService.evaluate(history, personaName);
+      res.json({ status: 'success', data: evaluation });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * STT: POST /api/vc/speech-to-text
+   */
+  async processSpeechToText(req, res, next) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ status: 'error', message: 'No audio file provided' });
+      }
+      const transcript = await sarvamService.speechToText(req.file.path);
+      res.json({ status: 'success', data: { transcript } });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * TTS: POST /api/vc/text-to-speech
+   */
+  async processTextToSpeech(req, res, next) {
+    try {
+      const { text, language, persona } = req.body;
+      const speaker = vcPromptService.personas[persona]?.speaker || 'meera';
+      const audioData = await sarvamService.textToSpeech(text, language, speaker);
+      res.json({ status: 'success', data: audioData });
+    } catch (error) {
+      next(error);
+    }
   }
+};
 
-  const systemPrompt = "You are StartWise AI Co-Pilot, a world-class startup strategist and venture capital expert. Your goal is to help founders build billion-dollar companies. Provide deep, actionable insights on business models, unit economics, fundraising, and product-market fit. Be visionary yet practical. Use professional, encouraging language.";
-  
-  const aiResponse = await aiService.generateCompletion(systemPrompt, message, false);
-  
-  sendSuccess(res, { response: aiResponse }, "Chat processed successfully");
-});
-
-export const processVoice = catchAsync(async (req, res, next) => {
-  const { text } = req.body;
-  // This would typically integrate with an STT/TTS service like ElevenLabs or OpenAI Whisper
-  // For the hackathon/demo, we'll return a simulated URL or tell the client to use browser TTS
-  sendSuccess(res, { useBrowserTTS: true, textToSpeak: text }, "Voice command processed");
-});
-
-export const getScore = catchAsync(async (req, res, next) => {
-  const { pitchData } = req.body;
-  
-  if (!pitchData) {
-    return sendError(res, "Pitch data is required", 400);
-  }
-
-  const systemPrompt = "You are a top-tier VC analyst. Score the following pitch deck data on a scale of 1-10 for Market, Team, and Product. Provide a brief feedback. Return ONLY valid JSON: {\"overallScore\": number, \"breakdown\": {\"market\": number, \"team\": number, \"product\": number}, \"feedback\": \"string\"}";
-  
-  const scoreDataStr = await aiService.generateCompletion(systemPrompt, JSON.stringify(pitchData), true);
-  
-  try {
-    const scoreData = JSON.parse(scoreDataStr);
-    sendSuccess(res, scoreData, "Pitch evaluated successfully");
-  } catch (error) {
-    sendError(res, "Failed to parse AI evaluation", 500);
-  }
-});
+export default vcController;

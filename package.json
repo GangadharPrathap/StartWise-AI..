@@ -10,7 +10,7 @@
     "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist/server.js --external:vite --external:express --external:groq-sdk --external:resend --external:cors --external:dotenv --external:helmet --external:express-rate-limit",
     "start": "node dist/server.js",
     "preview": "vite preview",
-    "clean": "rm -rf dist",
+    "clean": "node -e \"const fs = require('fs'); fs.rmSync('dist', { recursive: true, force: true });\"",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "express": "^4.21.2",
     "express-rate-limit": "^8.5.1",
     "firebase": "^12.13.0",
+    "form-data": "^4.0.5",
     "framer-motion": "^12.38.0",
     "groq-sdk": "^1.1.2",
     "gsap": "^3.15.0",
@@ -33,15 +34,20 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
+    "multer": "^2.1.1",
+    "pg": "^8.20.0",
     "pptxgenjs": "^4.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.6.0",
     "react-leaflet": "^5.0.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.15.0",
+    "recharts": "^3.8.1",
     "resend": "^6.10.0",
-    "tailwind-merge": "^3.5.0",
-    "vite": "^6.2.0"
+    "tailwind-merge": "^3.6.0",
+    "vite": "^6.2.0",
+    "zustand": "^5.0.13"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

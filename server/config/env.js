@@ -18,6 +18,7 @@ export const GEMINI_API_KEY = getFirstEnv(
 );
 
 export const RESEND_API_KEY = process.env.RESEND_API_KEY;
+export const SARVAM_API_KEY = process.env.SARVAM_API_KEY;
 export const DAILY_API_KEY = process.env.DAILY_API_KEY;
 export const PORT = Number(process.env.PORT) || 3000;
 export const APP_HOSTNAME = (process.env.APP_HOSTNAME || "localhost")

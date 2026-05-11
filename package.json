@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "node server/index.js",
-    "build": "npm run clean && npm run build:client && npm run build:server",
+   "build": "npm run clean && npm run build:client",
     "build:client": "vite build",
-    "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist/server.js --external:vite --external:express --external:groq-sdk --external:resend --external:cors --external:dotenv --external:helmet --external:express-rate-limit",
-    "start": "node dist/server.js",
+    "start": "node server/index.js",
+    "postinstall": "prisma generate",
     "preview": "vite preview",
     "clean": "node -e \"const fs = require('fs'); fs.rmSync('dist', { recursive: true, force: true });\"",
     "lint": "eslint ."

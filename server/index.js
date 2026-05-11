@@ -89,6 +89,9 @@ async function startServer() {
 
   // Routes
   app.use("/api", apiRouter);
+  app.use("/api/analysis", analysisRouter);
+  app.use("/api/startups", startupsRouter);
+
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
@@ -104,16 +107,8 @@ async function startServer() {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
-  app.use("/api/analysis", analysisRouter);
-app.use("/api/startups", startupsRouter);
   // Global Error Handler
   app.use(errorHandler);
-
-
-  const app = express();
-
-  app.use(express.json());
-
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://${APP_HOSTNAME}:${PORT}`);

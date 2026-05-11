@@ -4,12 +4,15 @@ import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 
 export default defineConfig(({ mode }) => {
+  // Load environment variables from project root
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
+    // Frontend root
     root: 'client',
 
-    envDir: '../',
+    // Correct env location (project root)
+    envDir: '.',
 
     plugins: [
       react(),
@@ -17,8 +20,24 @@ export default defineConfig(({ mode }) => {
     ],
 
     build: {
+      // Output build to root dist folder
       outDir: '../dist',
+
+      // Clean old build
       emptyOutDir: true,
+
+      // Better chunk splitting
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ['react', 'react-dom'],
+            firebase: ['firebase/app', 'firebase/auth'],
+            charts: ['recharts'],
+            animations: ['gsap', 'framer-motion'],
+            maps: ['leaflet', 'react-leaflet']
+          }
+        }
+      }
     },
 
     resolve: {

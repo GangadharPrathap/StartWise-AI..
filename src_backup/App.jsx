@@ -21,21 +21,21 @@ import { useState, useEffect, lazy, Suspense, memo, useMemo, useCallback } from 
 import { onAuthStateChanged } from 'firebase/auth'
 
 // --- Auth & Services ---
-import { auth, signInWithGoogle, logout } from './firebase'
-import Login from './pages/Login'
+import { auth, signInWithGoogle, logout } from './firebase.js'
+import Login from './pages/Login.jsx'
 
 // --- Performance: Lazy Loading Pages ---
-const Dashboard = lazy(() => import('./pages/Dashboard'))
-const Analyzer = lazy(() => import('./pages/Analyzer'))
-const AIRoadmap = lazy(() => import('./pages/AIRoadmap'))
-const InvestorMap = lazy(() => import('./pages/InvestorMap'))
-const VCSimulator = lazy(() => import('./pages/VCSimulator'))
-const Meetings = lazy(() => import('./pages/Meetings'))
-const PitchDeck = lazy(() => import('./pages/PitchDeck'))
+const Dashboard = lazy(() => import('./pages/Dashboard.jsx'))
+const Analyzer = lazy(() => import('./pages/Analyzer.js'))
+const AIRoadmap = lazy(() => import('./pages/AIRoadmap.js'))
+const InvestorMap = lazy(() => import('./pages/InvestorMap.jsx'))
+const VCSimulator = lazy(() => import('./pages/VCSimulator.js'))
+const Meetings = lazy(() => import('./pages/Meetings.js'))
+const PitchDeck = lazy(() => import('./pages/PitchDeck.js'))
 
-import { AILoader } from './components/ui/Loader'
-import { Badge } from './components/ui/index.jsx'
-import CustomCursor from './components/ui/CustomCursor'
+import { AILoader } from './components/ui/Loader.js'
+import { Badge } from './components/ui/index.js'
+import CustomCursor from './components/ui/CustomCursor.jsx'
 
 // --- Optimized Components ---
 const SidebarItem = memo(({ item, isActive, isSidebarOpen }) => (
@@ -239,7 +239,7 @@ function AppContent() {
 }
 
 import { BrowserRouter as Router } from 'react-router-dom'
-import ErrorBoundary from './components/ErrorBoundary'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 
 export default function App() {
   return (

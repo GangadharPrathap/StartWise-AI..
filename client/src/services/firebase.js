@@ -7,7 +7,10 @@ import {
   onAuthStateChanged
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-
+console.log(
+  "Firebase Key:",
+  import.meta.env.VITE_FIREBASE_API_KEY
+);
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -33,14 +36,20 @@ export const signInWithGoogle = async () => {
     throw error;
   }
 };
-
-export const logout = async () => {
+export async function logout() {
   try {
     await signOut(auth);
+
+    console.log("✅ Logout Success");
+
   } catch (error) {
-    console.error("MAANG Auth Error - Logout Failed:", error);
+    console.error(
+      "❌ Logout Error:",
+      error
+    );
+
     throw error;
   }
-};
+}
 
 export default app;

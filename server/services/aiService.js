@@ -49,3 +49,6 @@ Format the response professionally with headings.
     throw new Error("AI Analysis Failed");
   }
 }
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error("Missing GEMINI_API_KEY");
+}

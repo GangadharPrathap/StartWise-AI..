@@ -5,12 +5,12 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { prisma } from "./lib/prisma.js";
-
+import startupsRouter from "./routes/startups.js";
 import { PORT, APP_HOSTNAME } from "./config/env.js";
 import apiRouter from "./routes/apiRouter.js";
 import { requestLogger } from "./middleware/logger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-
+import analysisRouter from "./routes/analysis.js";
 import db from "./services/dbService.js";
 
 const app = express();
@@ -104,7 +104,8 @@ async function startServer() {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
-
+  app.use("/api/analysis", analysisRouter);
+app.use("/api/startups", startupsRouter);
   // Global Error Handler
   app.use(errorHandler);
 

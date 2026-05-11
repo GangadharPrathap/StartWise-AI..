@@ -4,6 +4,7 @@ import path from "path";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { prisma } from "./lib/prisma.js";
 
 import { PORT, APP_HOSTNAME } from "./config/env.js";
 import apiRouter from "./routes/apiRouter.js";
@@ -12,9 +13,23 @@ import { errorHandler } from "./middleware/errorHandler.js";
 
 import db from "./services/dbService.js";
 
+const app = express();
+app.use(cors());
+
+async function testDB() {
+  try {
+    await prisma.$connect();
+    console.log("✅ PostgreSQL Connected");
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+testDB();
+
 async function startServer() {
-  const app = express();
-  
+  // const app = express();
+
   // Initialize Database
   await db.init();
 
@@ -31,19 +46,19 @@ async function startServer() {
         directives: {
           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
           "script-src": [
-            "'self'", "'unsafe-inline'", "'unsafe-eval'", 
-            "https://unpkg.com", "https://cdn.jsdelivr.net", 
-            "https://apis.google.com", "https://*.firebaseapp.com", 
+            "'self'", "'unsafe-inline'", "'unsafe-eval'",
+            "https://unpkg.com", "https://cdn.jsdelivr.net",
+            "https://apis.google.com", "https://*.firebaseapp.com",
             "https://www.googletagmanager.com", "https://maps.googleapis.com"
           ],
           "img-src": [
-            "'self'", "data:", "https:", "http:", 
-            "https://*.tile.openstreetmap.org", "https://*.google.com", 
+            "'self'", "data:", "https:", "http:",
+            "https://*.tile.openstreetmap.org", "https://*.google.com",
             "https://*.googleusercontent.com", "https://www.google-analytics.com"
           ],
           "connect-src": [
-            "'self'", "https:", "http:", "ws:", "wss:", 
-            "https://*.googleapis.com", "https://*.firebaseapp.com", 
+            "'self'", "https:", "http:", "ws:", "wss:",
+            "https://*.googleapis.com", "https://*.firebaseapp.com",
             "https://www.google-analytics.com", "https://analytics.google.com",
             "https://firebaseinstallations.googleapis.com"
           ],
@@ -92,6 +107,12 @@ async function startServer() {
 
   // Global Error Handler
   app.use(errorHandler);
+
+
+  const app = express();
+
+  app.use(express.json());
+
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://${APP_HOSTNAME}:${PORT}`);

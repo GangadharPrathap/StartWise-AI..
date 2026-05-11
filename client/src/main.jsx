@@ -11,22 +11,20 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
-        <AuthProvider>
-          <App />
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: '#0A0A0A',
-                color: '#fff',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '16px',
-                fontSize: '12px',
-                fontWeight: 'bold',
-              },
-            }}
-          />
-        </AuthProvider>
+        <App />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: '#0A0A0A',
+              color: '#fff',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '16px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+            },
+          }}
+        />
       </BrowserRouter>
     </ErrorBoundary>
   </StrictMode>,

@@ -3,5 +3,7 @@ builder = "nixpacks"
 buildCommand = "npm run build"
 
 [deploy]
-startCommand = "node --loader tsx server.ts"
+startCommand = "node server/index.js"
 runtime = "V2"
+healthCheckPath = "/api/debug-env"
+healthCheckTimeout = 100

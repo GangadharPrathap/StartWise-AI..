@@ -12,7 +12,7 @@ import { requestLogger } from "./middleware/logger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import analysisRouter from "./routes/analysis.js";
 import db from "./services/dbService.js";
-
+import mentorsRouter from "./routes/mentors.js";
 const app = express();
 app.use(cors());
 
@@ -54,11 +54,13 @@ async function startServer() {
           "img-src": [
             "'self'", "data:", "https:", "http:",
             "https://*.tile.openstreetmap.org", "https://*.google.com",
-            "https://*.googleusercontent.com", "https://www.google-analytics.com"
+            "https://*.googleusercontent.com", "https://www.google-analytics.com",
+            "https://api.dicebear.com"
           ],
           "connect-src": [
             "'self'", "https:", "http:", "ws:", "wss:",
             "https://*.googleapis.com", "https://*.firebaseapp.com",
+            "https://*.firebase.com",
             "https://www.google-analytics.com", "https://analytics.google.com",
             "https://firebaseinstallations.googleapis.com"
           ],
@@ -81,7 +83,7 @@ async function startServer() {
 
   // Apply rate limiter to API routes only
   app.use("/api/", limiter);
-
+app.use("/api/mentors", mentorsRouter);
   // Debug route
   app.get("/api/debug-env", (req, res) => {
     res.json({ status: "ok", time: new Date().toISOString() });
@@ -91,7 +93,6 @@ async function startServer() {
   app.use("/api", apiRouter);
   app.use("/api/analysis", analysisRouter);
   app.use("/api/startups", startupsRouter);
-
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

@@ -1,5 +1,9 @@
 // Service for identifying potential investors
+import investors from "../data/investors.json" assert { type: "json" };
 
+export async function getInvestors() {
+  return investors;
+}
 export function getLocalInvestors(city) {
   // In a real application, this would query a database of investors.
   // For now, we return a mock array or filter based on city.
@@ -11,6 +15,8 @@ export function getLocalInvestors(city) {
     { name: "Accel Partners", city: "Bangalore", fund: "$1.5B" },
     { name: "Kalaari Capital", city: "Bangalore", fund: "$650M" }
   ];
+
+
 
   if (city === "All") {
     return allInvestors;

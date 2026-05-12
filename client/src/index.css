@@ -18,7 +18,7 @@ body {
   color: white;
   min-height: 100vh;
   overflow-x: hidden;
-  cursor: none; /* Hide default cursor for GSAP custom cursor */
+  /* cursor: none; */
 }
 
 /* Custom Cursor */

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Sequoia Capital",
+    "focus": "AI",
+    "location": "Global"
+  },
+  {
+    "name": "Andreessen Horowitz",
+    "focus": "SaaS",
+    "location": "USA"
+  },
+  {
+    "name": "Accel",
+    "focus": "Startups",
+    "location": "India"
+  }
+]

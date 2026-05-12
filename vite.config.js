@@ -11,8 +11,9 @@ export default defineConfig(({ mode }) => {
     // Frontend root
     root: 'client',
 
-    // Correct env location (project root)
-    envDir: '.',
+    // envDir must point to the project root (where .env is)
+    // Since root is 'client', we need to go one level up
+    envDir: '../',
 
     plugins: [
       react(),
@@ -20,13 +21,8 @@ export default defineConfig(({ mode }) => {
     ],
 
     build: {
-      // Output build to root dist folder
       outDir: '../dist',
-
-      // Clean old build
       emptyOutDir: true,
-
-      // Better chunk splitting
       rollupOptions: {
         output: {
           manualChunks: {
@@ -47,9 +43,7 @@ export default defineConfig(({ mode }) => {
     },
 
     define: {
-      'process.env.GEMINI_API_KEY': JSON.stringify(
-        env.GEMINI_API_KEY
-      ),
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
 
     server: {

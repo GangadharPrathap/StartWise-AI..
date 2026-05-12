@@ -11,7 +11,6 @@ import apiRouter from "./routes/apiRouter.js";
 import { requestLogger } from "./middleware/logger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import analysisRouter from "./routes/analysis.js";
-import db from "./services/dbService.js";
 import mentorsRouter from "./routes/mentors.js";
 const app = express();
 app.use(cors());
@@ -28,11 +27,6 @@ async function testDB() {
 testDB();
 
 async function startServer() {
-  // const app = express();
-
-  // Initialize Database
-  await db.init();
-
   // Middleware
   app.use(express.json());
   // app.use(cors());

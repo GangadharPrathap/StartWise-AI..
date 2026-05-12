@@ -9,13 +9,14 @@ import {
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyC0N152L7BhKZZX6wNkdp-Xp43DAl1gNVA",
+  authDomain: "startwiseai-fb26b.firebaseapp.com",
+  projectId: "startwiseai-fb26b",
+  storageBucket: "startwiseai-fb26b.firebasestorage.app",
+  messagingSenderId: "928939457914",
+  appId: "1:928939457914:web:dfffba4a3014baea756ac3"
 };
+
 
 const app = initializeApp(firebaseConfig);
 

@@ -30,6 +30,8 @@ model User {
   createdAt   DateTime @default(now())
 
   startups    Startup[]
+  meetings    Meeting[]
+  vcSessions  VCSession[]
 }
 
 model Startup {
@@ -56,4 +58,25 @@ model Analysis {
   startup     Startup @relation(fields: [startupId], references: [id])
 
   createdAt   DateTime @default(now())
+}
+
+model Meeting {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  investorName String?
+  scheduledAt  DateTime?
+  status       String   @default("confirmed")
+  meetingLink  String?
+  createdAt    DateTime @default(now())
+}
+
+model VCSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  persona   String
+  history   Json
+  score     Json?
+  createdAt DateTime @default(now())
 }

@@ -1,17 +1,38 @@
 [
-  {
-    "name": "Sequoia Capital",
-    "focus": "AI",
-    "location": "Global"
-  },
-  {
-    "name": "Andreessen Horowitz",
-    "focus": "SaaS",
-    "location": "USA"
-  },
-  {
-    "name": "Accel",
-    "focus": "Startups",
-    "location": "India"
-  }
+    {
+        "name": "Sequoia Surge",
+        "city": "Delhi NCR",
+        "fund": "$1.5B",
+        "focus": "AI & SaaS"
+    },
+    {
+        "name": "Nexus Venture Partners",
+        "city": "Bangalore",
+        "fund": "$1.2B",
+        "focus": "Fintech"
+    },
+    {
+        "name": "Matrix Partners",
+        "city": "Mumbai",
+        "fund": "$1B",
+        "focus": "Consumer Tech"
+    },
+    {
+        "name": "Elevation Capital",
+        "city": "Delhi NCR",
+        "fund": "$600M",
+        "focus": "Early Stage"
+    },
+    {
+        "name": "Accel Partners",
+        "city": "Bangalore",
+        "fund": "$1.5B",
+        "focus": "AI Startups"
+    },
+    {
+        "name": "Kalaari Capital",
+        "city": "Bangalore",
+        "fund": "$650M",
+        "focus": "Deep Tech"
+    }
 ]
